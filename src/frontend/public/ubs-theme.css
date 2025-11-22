@@ -10,8 +10,10 @@
   --ubs-grey-dark: #333333;
   --ubs-blue: #003087; /* UBS corporate blue for accents */
   
-  /* Spacing and shadows */
-  --border-radius: 8px;
+  /* Spacing and shadows - UBS Rectangle Bubbles */
+  --border-radius: 0px; /* Rectangle = no border radius */
+  --shadow-ubs: 0 2px 8px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04); /* UBS professional shadow */
+  --shadow-ubs-hover: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06); /* Elevated shadow */
   --shadow-light: 0 1px 3px rgba(0,0,0,0.1);
   --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
 }
@@ -63,38 +65,132 @@ img[src*="ubs_logo"] {
   color: var(--ubs-black) !important;
 }
 
-/* Message bubbles - Professional styling */
+/* ============================================ */
+/* MESSAGE BUBBLES - REDESIGNED FROM SCRATCH   */
+/* All white, rectangle, UBS shadows           */
+/* ============================================ */
+
+/* Base message bubble - White rectangle with UBS shadow */
 .cl-message {
   background: var(--ubs-white) !important;
-  border-radius: var(--border-radius) !important;
-  border: 1px solid #E0E0E0 !important;
-  box-shadow: var(--shadow-light) !important;
-  margin: 8px 16px !important;
-  padding: 16px !important;
+  border-radius: var(--border-radius) !important; /* 0px = rectangle */
+  border: 1px solid #E8E8E8 !important;
+  box-shadow: var(--shadow-ubs) !important; /* UBS professional shadow */
+  margin: 12px 16px !important;
+  padding: 20px 24px !important;
+  position: relative !important;
+  max-width: 75% !important;
+  transition: all 0.2s ease !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
+.cl-message:hover {
+  box-shadow: var(--shadow-ubs-hover) !important; /* Elevated on hover */
+  transform: translateY(-1px) !important;
+}
+
+/* User messages - White rectangle, right-aligned */
 .cl-message-user {
-  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-red-dark) 100%) !important;
-  color: var(--ubs-white) !important;
-  border: none !important;
-  box-shadow: var(--shadow-medium) !important;
-  margin-left: 64px !important;
+  background: var(--ubs-white) !important;
+  border: 1px solid #E8E8E8 !important;
+  border-left: 4px solid var(--ubs-red) !important; /* Red accent on left */
+  box-shadow: var(--shadow-ubs) !important;
+  margin-left: auto !important; /* Push to right */
+  margin-right: 16px !important;
+  color: var(--ubs-grey-dark) !important;
+  border-radius: var(--border-radius) !important; /* Rectangle */
+}
+
+.cl-message-user:hover {
+  box-shadow: var(--shadow-ubs-hover) !important;
+  border-left-color: var(--ubs-red-dark) !important;
 }
 
 .cl-message-user .cl-message-content {
-  color: var(--ubs-white) !important;
+  color: var(--ubs-grey-dark) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
 }
 
+.cl-message-user .cl-author {
+  color: var(--ubs-red) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* AI messages - White rectangle, left-aligned */
 .cl-message-ai {
-  background: var(--ubs-grey-light) !important;
+  background: var(--ubs-white) !important;
+  border: 1px solid #E8E8E8 !important;
+  border-left: 4px solid var(--ubs-blue) !important; /* Blue accent on left */
+  box-shadow: var(--shadow-ubs) !important;
+  margin-left: 16px !important;
+  margin-right: auto !important; /* Keep on left */
   color: var(--ubs-grey-dark) !important;
-  border-left: 4px solid var(--ubs-red) !important;
-  margin-right: 64px !important;
+  border-radius: var(--border-radius) !important; /* Rectangle */
+}
+
+.cl-message-ai:hover {
+  box-shadow: var(--shadow-ubs-hover) !important;
+  border-left-color: var(--ubs-red) !important; /* Change to red on hover */
 }
 
 .cl-message-ai .cl-message-content {
   color: var(--ubs-grey-dark) !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+}
+
+.cl-message-ai .cl-author {
+  color: var(--ubs-blue) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Message container wrapper - ensure proper spacing */
+.cl-message-container,
+[class*="message-container"],
+[class*="MessageContainer"] {
+  display: flex !important;
+  flex-direction: column !important;
+  margin-bottom: 16px !important;
+}
+
+/* Message body/content area */
+.cl-message-body,
+.cl-message-content-wrapper,
+[class*="message-body"],
+[class*="MessageBody"] {
+  background: transparent !important;
+  border-radius: var(--border-radius) !important; /* Rectangle */
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure all nested elements maintain white background */
+.cl-message * {
+  border-radius: var(--border-radius) !important; /* Rectangle for all nested elements */
+}
+
+.cl-message p,
+.cl-message div,
+.cl-message span {
+  color: var(--ubs-grey-dark) !important;
+}
+
+/* Remove any gradient backgrounds from messages */
+.cl-message-user,
+.cl-message-ai,
+.cl-message {
+  background-image: none !important;
+  background: var(--ubs-white) !important;
 }
 
 /* Avatar styling - UBS branding */
