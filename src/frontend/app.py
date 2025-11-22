@@ -1,0 +1,32 @@
+import chainlit as cl
+
+
+@cl.on_chat_start
+async def on_chat_start():
+    """
+    Called when a new chat session starts.
+    """
+    await cl.Message(
+        content="Welcome to UBS Financial Intelligence Assistant. How may I assist you today?"
+    ).send()
+
+
+@cl.on_message
+async def on_message(message: cl.Message):
+    """
+    Called when a user sends a message.
+    """
+    # Echo the message back for now (placeholder)
+    response = f"You said: {message.content}"
+
+    await cl.Message(
+        content=response
+    ).send()
+
+
+@cl.on_chat_end
+async def on_chat_end():
+    """
+    Called when a chat session ends.
+    """
+    pass

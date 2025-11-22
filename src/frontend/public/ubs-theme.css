@@ -1,0 +1,53 @@
+/* UBS Simple Theme - Colors and Fonts Only */
+
+:root {
+  /* UBS Colors */
+  --ubs-red: #E60000;
+  --ubs-white: #FFFFFF;
+  --ubs-black: #000000;
+  --ubs-grey: #757575;
+}
+
+/* UBS Font */
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+/* UBS Red for primary buttons */
+button[type="submit"],
+.MuiButton-contained,
+.MuiButton-containedPrimary {
+  background-color: var(--ubs-red) !important;
+  color: var(--ubs-white) !important;
+}
+
+button[type="submit"]:hover,
+.MuiButton-contained:hover {
+  background-color: #C00000 !important;
+}
+
+/* UBS Red for send button icon */
+button[type="submit"] svg,
+button[aria-label*="send" i] svg {
+  color: var(--ubs-white) !important;
+  fill: var(--ubs-white) !important;
+}
+
+/* Links in UBS Red */
+a {
+  color: var(--ubs-red) !important;
+}
+
+a:hover {
+  color: #C00000 !important;
+}
+
+/* Header text color */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ubs-black) !important;
+}
+
+/* Body text color */
+body, p, span, div {
+  color: var(--ubs-black) !important;
+}
