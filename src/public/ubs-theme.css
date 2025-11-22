@@ -137,7 +137,7 @@ div[class*="user-message"] {
   display: flex !important;
   justify-content: flex-end !important;
   width: 100% !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 32px !important;
   padding: 0 16px !important;
 }
 
@@ -148,7 +148,7 @@ div[class*="ai-message"] {
   display: flex !important;
   justify-content: flex-start !important;
   width: 100% !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 32px !important;
   padding: 0 16px !important;
 }
 
