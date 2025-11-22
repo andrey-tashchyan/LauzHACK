@@ -9,7 +9,7 @@ async def on_chat_start():
     """
     # The UBS logo will be injected into the header via custom CSS and JavaScript
     # from public/ubs-theme.css and public/ubs-custom.js
-    
+
     await cl.Message(
         content="Welcome to UBS-X-LauzHack Financial Intelligence Assistant. How may I assist you today?"
     ).send()
