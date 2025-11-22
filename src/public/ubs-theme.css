@@ -1,465 +1,204 @@
-/* UBS Enhanced Theme - Professional Corporate Styling */
+/* ============================================================================
+   UBS Theme - Message Bubbles Only
+   Clean white rectangle message bubbles with small shadows
+   ============================================================================ */
+
 :root {
-  /* UBS Color Palette */
+  /* UBS Colors */
   --ubs-red: #E60000;
-  --ubs-red-dark: #C00000;
+  --ubs-red-light: #FF1A1A;
   --ubs-white: #FFFFFF;
-  --ubs-black: #000000;
-  --ubs-grey-light: #F5F5F5;
-  --ubs-grey: #757575;
-  --ubs-grey-dark: #333333;
-  --ubs-blue: #003087; /* UBS corporate blue for accents */
-  
-  /* Spacing and shadows - UBS Rectangle Bubbles */
-  --border-radius: 0px; /* Rectangle = no border radius */
-  --shadow-ubs: 0 2px 8px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04); /* UBS professional shadow */
-  --shadow-ubs-hover: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06); /* Elevated shadow */
-  --shadow-light: 0 1px 3px rgba(0,0,0,0.1);
-  --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
+  --ubs-grey-50: #FAFAFA;
+  --ubs-grey-200: #EEEEEE;
+  --ubs-grey-300: #E0E0E0;
+  --ubs-grey-400: #BDBDBD;
+  --ubs-grey-600: #757575;
+  --ubs-grey-900: #212121;
+
+  /* Message bubble shadow */
+  --bubble-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --bubble-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.12), 0 2px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* UBS Typography - Clean, professional sans-serif */
-* {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
+/* ============================================================================
+   GLOBAL
+   ============================================================================ */
+
+body {
+  background: var(--ubs-grey-50) !important;
 }
 
-/* Hide Chainlit's default logo and force UBS branding */
-.cl-header .cl-logo,
-.cl-header img:not([src*="ubs_logo"]) {
-  display: none !important;
+/* ============================================================================
+   HEADER - Red accent bar
+   ============================================================================ */
+
+.cl-header::before,
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ubs-red) 0%, #C00000 100%);
+  z-index: 1001;
 }
 
-/* Force UBS logo display in header */
-.cl-header .cl-logo[src*="ubs_logo"],
-img[src*="ubs_logo"] {
-  display: block !important;
-  max-height: 40px !important;
-  width: auto !important;
-  margin: 0 auto 16px !important;
-}
+/* ============================================================================
+   MESSAGE BUBBLES
+   ============================================================================ */
 
-/* Header styling - Clean UBS corporate header */
-.cl-header {
-  background: var(--ubs-white) !important;
-  border-bottom: 1px solid #E0E0E0 !important;
-  padding: 16px 24px !important;
-  box-shadow: var(--shadow-light) !important;
-  position: relative !important;
-}
-
-.cl-header h1,
-.cl-header .cl-title {
-  color: var(--ubs-black) !important;
-  font-size: 24px !important;
-  font-weight: 600 !important;
-  margin: 0 !important;
-  text-align: center !important;
-  letter-spacing: 0.02em !important;
-}
-
-/* Chat container - Clean white background */
-.cl-root {
-  background: var(--ubs-white) !important;
-  color: var(--ubs-black) !important;
-}
-
-/* ==========================================================================
-   NUCLEAR OPTION - Overwrite generic element styles
-   ========================================================================== */
-
-/* Force ALL message containers to be transparent layout wrappers only */
-div[class*="message"] {
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-/* Force ALL paper components to be transparent */
-.MuiPaper-root {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
-/* REBUILD: Target the text content directly */
-.cl-message-content {
-    background-color: #FFFFFF !important;
-    border: 1px solid #E8E8E8 !important;
-    border-left: 4px solid #003087 !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04) !important; /* Enhanced UBS Shadow */
-    padding: 20px 24px !important;
-    border-radius: 0 !important;
-    color: #333333 !important;
-    display: inline-block !important;
-    min-width: 200px !important;
-    transition: all 0.2s ease !important;
-    position: relative !important;
-}
-
-.cl-message-content:hover {
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06) !important; /* Hover lift */
-    transform: translateY(-1px) !important;
-    border-left-color: #E60000 !important; /* Red accent on hover */
-}
-
-/* ALIGNMENT via sibling selectors (Chainlit structure is weird) */
-
-/* User Message: It usually comes after an empty or specific avatar div */
-/* We'll try to target by context */
-
-.cl-message-user .cl-message-content {
-    margin-left: auto !important;
-    margin-right: 0 !important;
-    display: block !important;
-    max-width: fit-content !important;
-}
-
-.cl-message-ai .cl-message-content {
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    display: block !important;
-    max-width: fit-content !important;
-}
-
-/* Force parent flex alignment */
-.cl-message-user {
-    display: flex !important;
-    justify-content: flex-end !important;
-    width: 100% !important;
-    padding-right: 20px !important;
-}
-
-.cl-message-ai {
-    display: flex !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
-    padding-left: 20px !important;
-}
-
-/* HIDE EVERYTHING ELSE that creates boxes */
-.cl-avatar { display: none !important; }
-.cl-user-avatar { display: none !important; }
-svg[data-testid="PersonIcon"] { display: none !important; }
-svg[data-testid="SmartToyIcon"] { display: none !important; }
-
-/* Fix text color contrast */
-p, span, div {
-    color: inherit !important;
-}
-
-/* Message container wrapper - NO styling, just layout */
-.cl-message-container,
-[class*="message-container"],
-[class*="MessageContainer"] {
-  display: flex !important;
-  flex-direction: column !important;
-  margin-bottom: 16px !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-/* Ensure NO nested elements create boxes */
-.cl-message *:not(.cl-message) {
+/* Reset ALL message containers */
+.cl-message,
+.cl-step,
+.MuiPaper-root,
+div[class*="message"],
+div[class*="Message"],
+div[class*="step"],
+div[class*="Step"] {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-}
-
-.cl-message p,
-.cl-message div:not(.cl-message),
-.cl-message span {
-  color: var(--ubs-grey-dark) !important;
-  background: transparent !important;
-  border: none !important;
   padding: 0 !important;
-  margin: 0 0 8px 0 !important;
+  margin: 0 !important;
 }
 
-.cl-message p:last-child,
-.cl-message div:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* Avatar styling - UBS branding */
-.cl-avatar {
-  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-blue) 100%) !important;
-  border-radius: 50% !important;
-  box-shadow: var(--shadow-light) !important;
-}
-
-.cl-avatar-user .cl-avatar-img {
+/* White rectangle message bubbles */
+.cl-message-content,
+.cl-step-content,
+[class*="message-content"],
+[class*="MessageContent"],
+[class*="step-content"],
+[class*="StepContent"] {
+  /* White rectangle */
   background: var(--ubs-white) !important;
-  color: var(--ubs-red) !important;
-  font-weight: 600 !important;
-}
 
-.cl-avatar-ai .cl-avatar-img {
-  background: var(--ubs-red) !important;
-  color: var(--ubs-white) !important;
-}
+  /* Small shadow */
+  box-shadow: var(--bubble-shadow) !important;
 
-/* Input area - Clean, professional */
-.cl-input-container {
-  background: var(--ubs-white) !important;
-  border-top: 1px solid #E0E0E0 !important;
-  padding: 16px 24px !important;
-  box-shadow: var(--shadow-light) !important;
-}
+  /* Sharp corners */
+  border-radius: 0 !important;
 
-.cl-input {
-  background: var(--ubs-white) !important;
-  border: 2px solid #E0E0E0 !important;
-  border-radius: var(--border-radius) !important;
-  color: var(--ubs-grey-dark) !important;
-  padding: 12px 16px !important;
-  font-size: 16px !important;
-  transition: all 0.2s ease !important;
-}
-
-.cl-input:focus {
-  border-color: var(--ubs-red) !important;
-  box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1) !important;
-  outline: none !important;
-}
-
-/* Send button - UBS red icon, clean button */
-.cl-send-button,
-.cl-input-container button[type="submit"],
-button[aria-label*="send" i],
-button[aria-label*="submit" i] {
-  background: transparent !important;
+  /* No border by default */
   border: none !important;
-  color: var(--ubs-red) !important;
-  padding: 8px !important;
-  border-radius: 50% !important;
+
+  /* Padding */
+  padding: 18px 20px !important;
+
+  /* Text */
+  color: var(--ubs-grey-900) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+
+  /* Width - fit content naturally */
+  max-width: fit-content !important;
+  display: inline-block !important;
+
+  /* Transition */
   transition: all 0.2s ease !important;
-  width: 40px !important;
-  height: 40px !important;
+}
+
+/* AI/Assistant messages - left with red accent */
+.cl-message.cl-assistant-message .cl-message-content,
+.cl-message.cl-ai-message .cl-message-content,
+.cl-step.cl-assistant-step .cl-step-content,
+div[class*="assistant"] .cl-message-content,
+div[class*="ai"] .cl-message-content {
+  border-left: 3px solid var(--ubs-red) !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+.cl-message.cl-assistant-message .cl-message-content:hover,
+.cl-message.cl-ai-message .cl-message-content:hover,
+div[class*="assistant"] .cl-message-content:hover {
+  box-shadow: var(--bubble-shadow-hover) !important;
+  border-left-color: var(--ubs-red-light) !important;
+}
+
+/* User messages - right with gray accent */
+.cl-message.cl-user-message .cl-message-content,
+div[class*="user"] .cl-message-content {
+  border-right: 3px solid var(--ubs-grey-400) !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  background: var(--ubs-grey-50) !important;
+}
+
+.cl-message.cl-user-message .cl-message-content:hover,
+div[class*="user"] .cl-message-content:hover {
+  box-shadow: var(--bubble-shadow-hover) !important;
+  border-right-color: var(--ubs-grey-600) !important;
+}
+
+/* Container alignment */
+.cl-message.cl-user-message,
+div[class*="user-message"] {
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-left: 8px !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+  padding: 0 16px !important;
 }
 
-.cl-send-button:hover,
-.cl-input-container button[type="submit"]:hover,
-button[aria-label*="send" i]:hover,
-button[aria-label*="submit" i]:hover {
-  background: rgba(230, 0, 0, 0.1) !important;
-  transform: scale(1.05) !important;
-  box-shadow: var(--shadow-light) !important;
+.cl-message.cl-assistant-message,
+.cl-message.cl-ai-message,
+div[class*="assistant-message"],
+div[class*="ai-message"] {
+  display: flex !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+  padding: 0 16px !important;
 }
 
-/* Force send icon to UBS red */
-.cl-send-button svg,
-.cl-send-button svg *,
-.cl-input-container button[type="submit"] svg,
-.cl-input-container button[type="submit"] svg *,
-button[aria-label*="send" i] svg,
-button[aria-label*="send" i] svg *,
-button[aria-label*="submit" i] svg,
-button[aria-label*="submit" i] svg * {
-  color: var(--ubs-red) !important;
-  fill: var(--ubs-red) !important;
-  stroke: var(--ubs-red) !important;
-  stroke-width: 2px !important;
-}
-
-/* Primary buttons - UBS red */
-.MuiButton-contained,
-.MuiButton-containedPrimary,
-.cl-button-primary,
-button[class*="primary"],
-button[class*="Primary"] {
-  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-red-dark) 100%) !important;
-  color: var(--ubs-white) !important;
-  border: none !important;
-  border-radius: var(--border-radius) !important;
-  font-weight: 600 !important;
-  text-transform: none !important;
-  padding: 12px 24px !important;
-  box-shadow: var(--shadow-medium) !important;
-  transition: all 0.2s ease !important;
-}
-
-.MuiButton-contained:hover,
-.MuiButton-containedPrimary:hover,
-.cl-button-primary:hover,
-button[class*="primary"]:hover,
-button[class*="Primary"]:hover {
-  background: linear-gradient(135deg, var(--ubs-red-dark) 0%, var(--ubs-red) 100%) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 16px rgba(230, 0, 0, 0.3) !important;
-}
-
-/* Secondary buttons - Clean grey */
-.MuiButton-outlined,
-.MuiButton-text,
-.cl-button-secondary,
-button[class*="secondary"],
-button[class*="Secondary"] {
+/* Clean text inside bubbles */
+.cl-message-content *,
+.cl-step-content * {
   background: transparent !important;
-  color: var(--ubs-grey-dark) !important;
-  border: 2px solid #E0E0E0 !important;
-  border-radius: var(--border-radius) !important;
-  font-weight: 500 !important;
-  text-transform: none !important;
-  padding: 10px 20px !important;
-  transition: all 0.2s ease !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.MuiButton-outlined:hover,
-.MuiButton-text:hover,
-.cl-button-secondary:hover,
-button[class*="secondary"]:hover,
-button[class*="Secondary"]:hover {
-  background: var(--ubs-grey-light) !important;
-  border-color: var(--ubs-red) !important;
-  color: var(--ubs-red) !important;
-  transform: translateY(-1px) !important;
+.cl-message-content p + p {
+  margin-top: 12px !important;
 }
 
-/* Links - UBS red */
-a,
-.cl-link {
-  color: var(--ubs-red) !important;
-  text-decoration: none !important;
-  font-weight: 500 !important;
-  transition: color 0.2s ease !important;
-}
-
-a:hover,
-.cl-link:hover {
-  color: var(--ubs-red-dark) !important;
-  text-decoration: underline !important;
-}
-
-/* Typography hierarchy */
-h1, .cl-h1 { color: var(--ubs-black) !important; font-size: 28px !important; font-weight: 700 !important; margin: 24px 0 16px !important; }
-h2, .cl-h2 { color: var(--ubs-black) !important; font-size: 24px !important; font-weight: 600 !important; margin: 20px 0 12px !important; }
-h3, .cl-h3 { color: var(--ubs-grey-dark) !important; font-size: 20px !important; font-weight: 600 !important; margin: 16px 0 8px !important; }
-p, .cl-p, .cl-message-content { color: var(--ubs-grey-dark) !important; margin: 12px 0 !important; }
-
-/* Code blocks - Professional styling */
-pre, code {
-  background: #FAFAFA !important;
-  border: 1px solid #E0E0E0 !important;
-  border-radius: var(--border-radius) !important;
-  color: var(--ubs-grey-dark) !important;
-  padding: 16px !important;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace !important;
-  overflow-x: auto !important;
-}
-
-/* Scrollbars - Subtle UBS styling */
-::-webkit-scrollbar {
-  width: 8px !important;
-  height: 8px !important;
-}
-
-::-webkit-scrollbar-track {
-  background: #F1F1F1 !important;
-  border-radius: 4px !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--ubs-grey) !important;
-  border-radius: 4px !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--ubs-red) !important;
-}
-
-/* Loading indicators - UBS red */
-.cl-loading,
-.cl-spinner {
-  color: var(--ubs-red) !important;
-  border-color: var(--ubs-red) !important;
-}
-
-/* Hide theme toggle buttons */
-button[aria-label*="theme" i],
-button[aria-label*="dark mode" i],
-button[aria-label*="light mode" i],
-button[id*="theme" i],
-.MuiIconButton-root[title*="theme" i],
-.MuiIconButton-root[title*="dark" i],
-.MuiIconButton-root[title*="light" i],
-svg[data-testid*="Brightness" i],
-svg[data-testid*="DarkMode" i],
-svg[data-testid*="LightMode" i] {
+/* Hide avatars */
+.cl-avatar,
+[class*="avatar"],
+svg[data-testid="PersonIcon"],
+svg[data-testid="SmartToyIcon"] {
   display: none !important;
 }
 
-/* Ensure all text is readable */
-body, p, span, div, .cl-text {
-  color: var(--ubs-grey-dark) !important;
+/* ============================================================================
+   HIDE THEME TOGGLE
+   ============================================================================ */
+
+button[aria-label*="theme" i],
+button[title*="theme" i],
+svg[data-testid*="Brightness"],
+svg[data-testid*="DarkMode"],
+svg[data-testid*="LightMode"],
+.MuiIconButton-root:has(svg[data-testid*="Brightness"]),
+.MuiIconButton-root:has(svg[data-testid*="DarkMode"]),
+.MuiIconButton-root:has(svg[data-testid*="LightMode"]) {
+  display: none !important;
+  visibility: hidden !important;
 }
 
-/* Footer - Clean UBS styling */
-.cl-footer {
-  background: var(--ubs-white) !important;
-  border-top: 1px solid #E0E0E0 !important;
-  color: var(--ubs-grey) !important;
-  padding: 16px 24px !important;
-  font-size: 14px !important;
-  text-align: center !important;
-}
+/* ============================================================================
+   MOBILE RESPONSIVE
+   ============================================================================ */
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .cl-header {
-    padding: 12px 16px !important;
+  .cl-message-content,
+  .cl-step-content {
+    max-width: fit-content !important;
+    padding: 14px 16px !important;
+    font-size: 14px !important;
   }
-  
-  .cl-message,
-  .cl-message-user,
-  .cl-message-ai {
-    margin: 8px 12px !important;
-    padding: 16px 20px !important;
-    max-width: 85% !important;
-    background: var(--ubs-white) !important;
-    border: 1px solid #E8E8E8 !important;
-    border-left: 4px solid var(--ubs-blue) !important;
-  }
-  
-  .cl-message-user {
-    margin-right: 12px !important;
-    margin-left: auto !important;
-  }
-  
-  .cl-message-ai {
-    margin-left: 12px !important;
-    margin-right: auto !important;
-  }
-  
-  /* Ensure no nested boxes on mobile */
-  .cl-message * {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-  }
-  
-  .cl-input-container {
-    padding: 12px 16px !important;
-  }
-  
-  .cl-header h1,
-  .cl-header .cl-title {
-    font-size: 20px !important;
-  }
-}
-
-/* Override any remaining Chainlit pink/purple colors */
-* {
-  --primary-color: var(--ubs-red) !important;
-  --primary: var(--ubs-red) !important;
-  --secondary-color: var(--ubs-grey) !important;
-  --background-color: var(--ubs-white) !important;
-  --surface-color: var(--ubs-grey-light) !important;
-  --text-primary: var(--ubs-black) !important;
-  --text-secondary: var(--ubs-grey-dark) !important;
 }
