@@ -1,4 +1,5 @@
 import chainlit as cl
+import asyncio
 
 
 @cl.on_chat_start
@@ -19,6 +20,9 @@ async def on_message(message: cl.Message):
     """
     Called when a user sends a message.
     """
+    # Simulate latency for reasoning
+    await asyncio.sleep(1)
+
     # Echo the message back for now (placeholder)
     response = f"You said: {message.content}"
 

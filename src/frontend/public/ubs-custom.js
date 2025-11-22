@@ -194,12 +194,81 @@
             });
         }
         
+        // Force message alignment and styling - NUCLEAR MODE
+        function enforceMessageStyling() {
+            // 1. Find the ROOT message rows
+            const rows = document.querySelectorAll('.cl-message-user, .cl-message-ai');
+            
+            rows.forEach(row => {
+                // FORCE CONTAINER LAYOUT
+                row.style.cssText = `
+                    display: flex !important;
+                    width: 100% !important;
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                `;
+                
+                // ALIGNMENT
+                if (row.classList.contains('cl-message-user')) {
+                    row.style.justifyContent = 'flex-end';
+                    row.style.paddingRight = '20px';
+                } else {
+                    row.style.justifyContent = 'flex-start';
+                    row.style.paddingLeft = '20px';
+                }
+                
+                // 2. FIND THE BUBBLE (the element with the text)
+                // We look for the deepest div that has text content
+                const bubble = row.querySelector('.cl-message-content');
+                
+                if (bubble) {
+                    bubble.style.cssText = `
+                        background-color: #FFFFFF !important;
+                        border: 1px solid #E8E8E8 !important;
+                        border-left: 4px solid #003087 !important;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04) !important;
+                        padding: 20px 24px !important;
+                        border-radius: 0 !important;
+                        color: #333333 !important;
+                        max-width: 650px !important;
+                        min-width: 100px !important;
+                        transition: all 0.2s ease !important;
+                    `;
+                    
+                    // Add hover effect manually via JS since inline styles override CSS hover
+                    bubble.onmouseenter = function() {
+                        this.style.transform = 'translateY(-1px)';
+                        this.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)';
+                        this.style.borderLeftColor = '#E60000';
+                    };
+                    
+                    bubble.onmouseleave = function() {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)';
+                        this.style.borderLeftColor = '#003087';
+                    };
+                }
+                
+                // 3. KILL EVERYTHING ELSE (Nested shadows, backgrounds)
+                const others = row.querySelectorAll('*');
+                others.forEach(el => {
+                    if (el !== bubble && !bubble.contains(el)) {
+                        el.style.background = 'transparent';
+                        el.style.boxShadow = 'none';
+                        el.style.border = 'none';
+                    }
+                });
+            });
+        }
+
         // Initialize everything
         function initializeUBSTheme() {
             manageUBSLogo();
             forceSendIconRed();
             addProfessionalAnimations();
             addNewChatConfirmation();
+            enforceMessageStyling();
         }
         
         // Run immediately
@@ -233,7 +302,8 @@
         setInterval(() => {
             forceSendIconRed();
             manageUBSLogo();
-        }, 1000);
+            enforceMessageStyling();
+        }, 500);
         
         // Handle page visibility changes
         document.addEventListener('visibilitychange', () => {
