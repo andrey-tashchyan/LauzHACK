@@ -28,9 +28,17 @@ button[type="submit"]:hover,
 
 /* UBS Red for send button icon */
 button[type="submit"] svg,
-button[aria-label*="send" i] svg {
-  color: var(--ubs-white) !important;
-  fill: var(--ubs-white) !important;
+button[aria-label*="send" i] svg,
+button[aria-label*="submit" i] svg {
+  color: var(--ubs-red) !important;
+  fill: var(--ubs-red) !important;
+}
+
+/* UBS Red for enter icon specifically */
+svg[data-testid*="send" i],
+svg[class*="send" i] {
+  color: var(--ubs-red) !important;
+  fill: var(--ubs-red) !important;
 }
 
 /* Links in UBS Red */
@@ -50,4 +58,44 @@ h1, h2, h3, h4, h5, h6 {
 /* Body text color */
 body, p, span, div {
   color: var(--ubs-black) !important;
+}
+
+/* Hide theme toggle (sun/moon) buttons */
+button[aria-label*="theme" i],
+button[aria-label*="dark mode" i],
+button[aria-label*="light mode" i],
+button[id*="theme" i],
+.MuiIconButton-root[title*="theme" i],
+.MuiIconButton-root[title*="dark" i],
+.MuiIconButton-root[title*="light" i],
+svg[data-testid*="Brightness" i],
+svg[data-testid*="DarkMode" i],
+svg[data-testid*="LightMode" i] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide any button containing sun/moon icons */
+button:has(svg[data-testid*="Brightness"]),
+button:has(svg[data-testid*="DarkMode"]),
+button:has(svg[data-testid*="LightMode"]) {
+  display: none !important;
+}
+
+/* Ensure send/enter button is UBS red */
+button[type="submit"],
+button[aria-label*="send" i],
+button[aria-label*="submit" i],
+.send-button,
+.submit-button {
+  background-color: var(--ubs-red) !important;
+  color: var(--ubs-white) !important;
+}
+
+button[type="submit"]:hover,
+button[aria-label*="send" i]:hover,
+button[aria-label*="submit" i]:hover {
+  background-color: #C00000 !important;
 }
