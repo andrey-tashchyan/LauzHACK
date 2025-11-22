@@ -1,66 +1,301 @@
-/* UBS Simple Theme - Colors and Fonts Only */
-
+/* UBS Enhanced Theme - Professional Corporate Styling */
 :root {
-  /* UBS Colors */
+  /* UBS Color Palette */
   --ubs-red: #E60000;
+  --ubs-red-dark: #C00000;
   --ubs-white: #FFFFFF;
   --ubs-black: #000000;
+  --ubs-grey-light: #F5F5F5;
   --ubs-grey: #757575;
+  --ubs-grey-dark: #333333;
+  --ubs-blue: #003087; /* UBS corporate blue for accents */
+  
+  /* Spacing and shadows */
+  --border-radius: 8px;
+  --shadow-light: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* UBS Font */
+/* UBS Typography - Clean, professional sans-serif */
 * {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
-/* UBS Red for primary buttons */
-button[type="submit"],
-.MuiButton-contained,
-.MuiButton-containedPrimary {
-  background-color: var(--ubs-red) !important;
+/* Hide Chainlit's default logo and force UBS branding */
+.cl-header .cl-logo,
+.cl-header img:not([src*="ubs_logo"]) {
+  display: none !important;
+}
+
+/* Force UBS logo display in header */
+.cl-header .cl-logo[src*="ubs_logo"],
+img[src*="ubs_logo"] {
+  display: block !important;
+  max-height: 40px !important;
+  width: auto !important;
+  margin: 0 auto 16px !important;
+}
+
+/* Header styling - Clean UBS corporate header */
+.cl-header {
+  background: var(--ubs-white) !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+  padding: 16px 24px !important;
+  box-shadow: var(--shadow-light) !important;
+  position: relative !important;
+}
+
+.cl-header h1,
+.cl-header .cl-title {
+  color: var(--ubs-black) !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  text-align: center !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Chat container - Clean white background */
+.cl-root {
+  background: var(--ubs-white) !important;
+  color: var(--ubs-black) !important;
+}
+
+/* Message bubbles - Professional styling */
+.cl-message {
+  background: var(--ubs-white) !important;
+  border-radius: var(--border-radius) !important;
+  border: 1px solid #E0E0E0 !important;
+  box-shadow: var(--shadow-light) !important;
+  margin: 8px 16px !important;
+  padding: 16px !important;
+}
+
+.cl-message-user {
+  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-red-dark) 100%) !important;
+  color: var(--ubs-white) !important;
+  border: none !important;
+  box-shadow: var(--shadow-medium) !important;
+  margin-left: 64px !important;
+}
+
+.cl-message-user .cl-message-content {
   color: var(--ubs-white) !important;
 }
 
-button[type="submit"]:hover,
-.MuiButton-contained:hover {
-  background-color: #C00000 !important;
+.cl-message-ai {
+  background: var(--ubs-grey-light) !important;
+  color: var(--ubs-grey-dark) !important;
+  border-left: 4px solid var(--ubs-red) !important;
+  margin-right: 64px !important;
 }
 
-/* UBS Red for send button icon */
-button[type="submit"] svg,
+.cl-message-ai .cl-message-content {
+  color: var(--ubs-grey-dark) !important;
+  font-weight: 500 !important;
+}
+
+/* Avatar styling - UBS branding */
+.cl-avatar {
+  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-blue) 100%) !important;
+  border-radius: 50% !important;
+  box-shadow: var(--shadow-light) !important;
+}
+
+.cl-avatar-user .cl-avatar-img {
+  background: var(--ubs-white) !important;
+  color: var(--ubs-red) !important;
+  font-weight: 600 !important;
+}
+
+.cl-avatar-ai .cl-avatar-img {
+  background: var(--ubs-red) !important;
+  color: var(--ubs-white) !important;
+}
+
+/* Input area - Clean, professional */
+.cl-input-container {
+  background: var(--ubs-white) !important;
+  border-top: 1px solid #E0E0E0 !important;
+  padding: 16px 24px !important;
+  box-shadow: var(--shadow-light) !important;
+}
+
+.cl-input {
+  background: var(--ubs-white) !important;
+  border: 2px solid #E0E0E0 !important;
+  border-radius: var(--border-radius) !important;
+  color: var(--ubs-grey-dark) !important;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+.cl-input:focus {
+  border-color: var(--ubs-red) !important;
+  box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1) !important;
+  outline: none !important;
+}
+
+/* Send button - UBS red icon, clean button */
+.cl-send-button,
+.cl-input-container button[type="submit"],
+button[aria-label*="send" i],
+button[aria-label*="submit" i] {
+  background: transparent !important;
+  border: none !important;
+  color: var(--ubs-red) !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 8px !important;
+}
+
+.cl-send-button:hover,
+.cl-input-container button[type="submit"]:hover,
+button[aria-label*="send" i]:hover,
+button[aria-label*="submit" i]:hover {
+  background: rgba(230, 0, 0, 0.1) !important;
+  transform: scale(1.05) !important;
+  box-shadow: var(--shadow-light) !important;
+}
+
+/* Force send icon to UBS red */
+.cl-send-button svg,
+.cl-send-button svg *,
+.cl-input-container button[type="submit"] svg,
+.cl-input-container button[type="submit"] svg *,
 button[aria-label*="send" i] svg,
-button[aria-label*="submit" i] svg {
+button[aria-label*="send" i] svg *,
+button[aria-label*="submit" i] svg,
+button[aria-label*="submit" i] svg * {
   color: var(--ubs-red) !important;
   fill: var(--ubs-red) !important;
+  stroke: var(--ubs-red) !important;
+  stroke-width: 2px !important;
 }
 
-/* UBS Red for enter icon specifically */
-svg[data-testid*="send" i],
-svg[class*="send" i] {
+/* Primary buttons - UBS red */
+.MuiButton-contained,
+.MuiButton-containedPrimary,
+.cl-button-primary,
+button[class*="primary"],
+button[class*="Primary"] {
+  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-red-dark) 100%) !important;
+  color: var(--ubs-white) !important;
+  border: none !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 12px 24px !important;
+  box-shadow: var(--shadow-medium) !important;
+  transition: all 0.2s ease !important;
+}
+
+.MuiButton-contained:hover,
+.MuiButton-containedPrimary:hover,
+.cl-button-primary:hover,
+button[class*="primary"]:hover,
+button[class*="Primary"]:hover {
+  background: linear-gradient(135deg, var(--ubs-red-dark) 0%, var(--ubs-red) 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(230, 0, 0, 0.3) !important;
+}
+
+/* Secondary buttons - Clean grey */
+.MuiButton-outlined,
+.MuiButton-text,
+.cl-button-secondary,
+button[class*="secondary"],
+button[class*="Secondary"] {
+  background: transparent !important;
+  color: var(--ubs-grey-dark) !important;
+  border: 2px solid #E0E0E0 !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  padding: 10px 20px !important;
+  transition: all 0.2s ease !important;
+}
+
+.MuiButton-outlined:hover,
+.MuiButton-text:hover,
+.cl-button-secondary:hover,
+button[class*="secondary"]:hover,
+button[class*="Secondary"]:hover {
+  background: var(--ubs-grey-light) !important;
+  border-color: var(--ubs-red) !important;
   color: var(--ubs-red) !important;
-  fill: var(--ubs-red) !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Links in UBS Red */
-a {
+/* Links - UBS red */
+a,
+.cl-link {
   color: var(--ubs-red) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: color 0.2s ease !important;
 }
 
-a:hover {
-  color: #C00000 !important;
+a:hover,
+.cl-link:hover {
+  color: var(--ubs-red-dark) !important;
+  text-decoration: underline !important;
 }
 
-/* Header text color */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--ubs-black) !important;
+/* Typography hierarchy */
+h1, .cl-h1 { color: var(--ubs-black) !important; font-size: 28px !important; font-weight: 700 !important; margin: 24px 0 16px !important; }
+h2, .cl-h2 { color: var(--ubs-black) !important; font-size: 24px !important; font-weight: 600 !important; margin: 20px 0 12px !important; }
+h3, .cl-h3 { color: var(--ubs-grey-dark) !important; font-size: 20px !important; font-weight: 600 !important; margin: 16px 0 8px !important; }
+p, .cl-p, .cl-message-content { color: var(--ubs-grey-dark) !important; margin: 12px 0 !important; }
+
+/* Code blocks - Professional styling */
+pre, code {
+  background: #FAFAFA !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: var(--border-radius) !important;
+  color: var(--ubs-grey-dark) !important;
+  padding: 16px !important;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace !important;
+  overflow-x: auto !important;
 }
 
-/* Body text color */
-body, p, span, div {
-  color: var(--ubs-black) !important;
+/* Scrollbars - Subtle UBS styling */
+::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
 }
 
-/* Hide theme toggle (sun/moon) buttons */
+::-webkit-scrollbar-track {
+  background: #F1F1F1 !important;
+  border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ubs-grey) !important;
+  border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ubs-red) !important;
+}
+
+/* Loading indicators - UBS red */
+.cl-loading,
+.cl-spinner {
+  color: var(--ubs-red) !important;
+  border-color: var(--ubs-red) !important;
+}
+
+/* Hide theme toggle buttons */
 button[aria-label*="theme" i],
 button[aria-label*="dark mode" i],
 button[aria-label*="light mode" i],
@@ -72,30 +307,51 @@ svg[data-testid*="Brightness" i],
 svg[data-testid*="DarkMode" i],
 svg[data-testid*="LightMode" i] {
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
-/* Hide any button containing sun/moon icons */
-button:has(svg[data-testid*="Brightness"]),
-button:has(svg[data-testid*="DarkMode"]),
-button:has(svg[data-testid*="LightMode"]) {
-  display: none !important;
+/* Ensure all text is readable */
+body, p, span, div, .cl-text {
+  color: var(--ubs-grey-dark) !important;
 }
 
-/* Ensure send/enter button is UBS red */
-button[type="submit"],
-button[aria-label*="send" i],
-button[aria-label*="submit" i],
-.send-button,
-.submit-button {
-  background-color: var(--ubs-red) !important;
-  color: var(--ubs-white) !important;
+/* Footer - Clean UBS styling */
+.cl-footer {
+  background: var(--ubs-white) !important;
+  border-top: 1px solid #E0E0E0 !important;
+  color: var(--ubs-grey) !important;
+  padding: 16px 24px !important;
+  font-size: 14px !important;
+  text-align: center !important;
 }
 
-button[type="submit"]:hover,
-button[aria-label*="send" i]:hover,
-button[aria-label*="submit" i]:hover {
-  background-color: #C00000 !important;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cl-header {
+    padding: 12px 16px !important;
+  }
+  
+  .cl-message {
+    margin: 8px 12px !important;
+    padding: 12px !important;
+  }
+  
+  .cl-input-container {
+    padding: 12px 16px !important;
+  }
+  
+  .cl-header h1,
+  .cl-header .cl-title {
+    font-size: 20px !important;
+  }
+}
+
+/* Override any remaining Chainlit pink/purple colors */
+* {
+  --primary-color: var(--ubs-red) !important;
+  --primary: var(--ubs-red) !important;
+  --secondary-color: var(--ubs-grey) !important;
+  --background-color: var(--ubs-white) !important;
+  --surface-color: var(--ubs-grey-light) !important;
+  --text-primary: var(--ubs-black) !important;
+  --text-secondary: var(--ubs-grey-dark) !important;
 }
