@@ -175,7 +175,7 @@
                 const type = button.getAttribute('type') || '';
                 const className = button.className.toLowerCase();
 
-                // Skip non-send buttons (copy, theme, logo, etc.)
+                // Skip non-send buttons (copy, theme, logo, scroll, etc.)
                 if (
                     ariaLabel.toLowerCase().includes('copy') ||
                     title.toLowerCase().includes('copy') ||
@@ -183,8 +183,16 @@
                     title.toLowerCase().includes('theme') ||
                     ariaLabel.toLowerCase().includes('logo') ||
                     title.toLowerCase().includes('logo') ||
+                    ariaLabel.toLowerCase().includes('scroll') ||
+                    title.toLowerCase().includes('scroll') ||
+                    ariaLabel.toLowerCase().includes('bottom') ||
+                    title.toLowerCase().includes('bottom') ||
                     className.includes('theme') ||
                     className.includes('copy') ||
+                    className.includes('scroll') ||
+                    className.includes('rounded-full') ||
+                    button.classList.contains('h-9') ||
+                    button.classList.contains('w-9') ||
                     button.closest('header') && !button.closest('.cl-input-container')
                 ) {
                     return;
