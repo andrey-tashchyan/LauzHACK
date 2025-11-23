@@ -15,10 +15,8 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
 from agent_router import AgentRouter  # noqa: E402
-from utils.session_manager import get_session_manager  # noqa: E402
 
 router = AgentRouter()
-session_manager = get_session_manager()
 
 
 @cl.on_chat_start
@@ -26,23 +24,7 @@ async def on_chat_start():
     """Called when a new chat session starts."""
     # The UBS logo will be injected into the header via custom CSS and JavaScript
     # from public/ubs-theme.css and public/ubs-custom.js
-
-    # Initialize conversation session for this user
-    session_id = cl.user_session.get("id")
-    if not session_id:
-        # Generate a unique session ID if not present
-        import uuid
-        session_id = str(uuid.uuid4())
-        cl.user_session.set("id", session_id)
-
-    # Get or create conversation session
-    conversation_session = session_manager.get_session(session_id)
-    cl.user_session.set("conversation_session", conversation_session)
-
-    # Welcome message
-    await cl.Message(
-        content="Welcome to the UBS AML Intelligence System! Ask me about companies, accounts, or suspicious activities."
-    ).send()
+    pass
 
 
 def load_transactions():
@@ -82,55 +64,17 @@ async def on_action(action: cl.Action):
 
 @cl.on_message
 async def on_message(message: cl.Message):
-    """
-    Route incoming user messages to the right specialist agent with streaming.
-    """
-    # Get the conversation session
-    conversation_session = cl.user_session.get("conversation_session")
-
-    # Create a message object to stream tokens into
-    msg = cl.Message(content="")
-    await msg.send()
-
-    # Stream the response
+    """Route incoming user messages to the right specialist agent."""
     loop = asyncio.get_running_loop()
-    full_response = ""
-
-    try:
-        # Run the streaming generator in the executor
-        async def stream_response():
-            nonlocal full_response
-            # Execute in thread pool to avoid blocking
-            for chunk in await loop.run_in_executor(
-                None,
-                lambda: list(router.route_and_execute_stream(
-                    message.content,
-                    session=conversation_session
-                ))
-            ):
-                full_response += chunk
-                await msg.stream_token(chunk)
-
-        await stream_response()
-
-    except Exception as e:
-        error_msg = f"\n\n[Error] {str(e)}"
-        full_response += error_msg
-        await msg.stream_token(error_msg)
-
-    # Update the message with the complete content
-    msg.content = full_response
-    await msg.update()
+    response = await loop.run_in_executor(
+        None, router.route_and_execute, message.content
+    )
+    await cl.Message(content=response).send()
 
 
 @cl.on_chat_end
 async def on_chat_end():
     """
-    Called when a chat session ends. Clean up the session.
+    Called when a chat session ends.
     """
-    session_id = cl.user_session.get("id")
-    if session_id:
-        # Optional: delete session to free memory
-        # Uncomment if you want to clear sessions on chat end
-        # session_manager.delete_session(session_id)
-        pass
+    pass
