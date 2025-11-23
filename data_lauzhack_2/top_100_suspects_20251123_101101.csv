@@ -1,0 +1,101 @@
+partner_id,partner_name,total_transactions,aggregate_risk_score,overall_risk_level,high_risk_features,medium_risk_features,low_risk_features
+b407466d-10ef-4cae-92ce-2a3af0501c92,Tania Gfeller,49008,100.0,HIGH,6,1,1
+cc85607f-13cd-4450-9168-23fc86dcf010,Wehrli GmbH,2661,100.0,HIGH,6,1,1
+34225861-1aaf-4a69-851c-6078e56fecb2,Eichenberger Sidler & Cie.,2130,100.0,HIGH,6,1,1
+c180dbb2-708a-4e86-9ac6-363f2b8b530e,Grob Gross AG,2132,100.0,HIGH,6,1,1
+40635eec-1357-4a6e-aa5c-9769a6b9e014,Muhamed Schumacher,2198,100.0,HIGH,6,1,1
+00335ba9-6aa2-4e14-b844-a4033a26258a,Martin Schweizer AG,2489,100.0,HIGH,6,1,1
+129da30f-d27a-4c82-8d24-0f3ecdcb939f,Steinmann GmbH,2489,100.0,HIGH,6,1,1
+07e04eaa-9252-4d39-9c0f-c1e1109bd69b,Probst GmbH,2531,100.0,HIGH,6,1,1
+6be885cb-8e43-48c7-a738-2dcf1ff429e9,Liliane Hofstetter,16776,100.0,HIGH,6,1,1
+259458a9-9c86-4a10-a1f7-de660d2ff96b,Imhof Staub GmbH,1892,100.0,HIGH,6,1,1
+a5cb7591-00de-445c-8299-69b6a81f5371,Seiler & Co.,2613,100.0,HIGH,6,1,1
+a61a23a5-d508-4450-97bc-4a6a6e246eea,Stefania Müller,1801,100.0,HIGH,6,1,1
+ee8a494b-d68e-4825-b31f-21ce20c24c14,Fitore Kaiser,2772,100.0,HIGH,6,1,1
+c42ba634-8999-4929-9def-8e1f3368e5d4,"Ross, Brown and Pace",11846,100.0,HIGH,6,1,1
+f686f113-0047-429c-8d87-d99f032f28be,Leu AG,2837,100.0,HIGH,6,1,1
+ef001e05-a7f5-449d-a64a-e28148a78c92,Maël Lüscher,10022,100.0,HIGH,6,1,1
+2b888219-e680-40a9-8201-99a6db1cc69d,Zbinden Eichenberger & Cie.,7620,100.0,HIGH,6,1,1
+67d77dd1-7424-4908-820c-ca92f47a59a9,快讯科技有限公司,3013,100.0,HIGH,6,1,1
+4ec4df03-bd43-4af2-849d-2afd32e64c9f,Guy Schär,3089,100.0,HIGH,6,1,1
+eb1fd772-6c32-4a32-9e3e-0fe98b3c6c2f,Georges Sigrist,727,94.38,HIGH,5,2,1
+69291c79-ada9-49f0-9a39-1351916b386f,Leandra Iten,858,93.75,HIGH,5,2,1
+3cf42af3-d3e5-4236-acd2-7d1200eac8c5,Helmut Zimmermann,976,93.75,HIGH,5,2,1
+cc4cc3df-17f2-4930-8670-0bf567371011,Jil Koch,1011,93.75,HIGH,5,2,1
+1dd38914-2bbe-486a-b240-73294db47511,Angela Friedli,821,93.75,HIGH,5,2,1
+6a4ba636-d5ab-47dd-a80c-a3bb12ce23e7,Walder & Co.,876,93.75,HIGH,5,2,1
+64dfe51d-b27b-43a2-b53d-80e3cb4dd5ad,Joséphine Kägi,890,93.75,HIGH,5,2,1
+654e4270-c379-4e00-923c-9d6e9cde7688,Cristiana Amrein,890,93.75,HIGH,5,2,1
+6b874820-f664-4ce9-85fc-2ccb773f4248,Gabriele Mettler,936,93.75,HIGH,5,2,1
+e52325c4-e2aa-4630-84cd-6de7754ad0c4,Ritter Sigrist AG,729,93.75,HIGH,5,2,1
+64dc5412-fdcc-4eac-81f3-81beddddcff6,Vincenzo Benz,736,93.75,HIGH,5,2,1
+6ead1922-915d-4025-885f-ca6525b9009b,Nelson Christen,731,93.75,HIGH,5,2,1
+82777702-5a3a-49ea-94d0-89a4f383fc44,Michael Beck,730,93.75,HIGH,5,2,1
+be58fd61-f42c-4f5d-b9c6-634b21a035bd,Geiger Zollinger GmbH,1116,93.75,HIGH,5,2,1
+23156bbe-0d41-46e3-9f8f-00632b4b2c46,Charlotte Baumgartner,723,93.75,HIGH,5,2,1
+5095940a-49f7-4452-ab1d-f45665789716,Lina Scherrer,690,93.75,HIGH,5,2,1
+e7e44a13-a218-46a8-a28e-1499a52e2129,Ammann AG,671,93.75,HIGH,5,2,1
+c94dbf25-ddc7-4dd1-9350-679161a64475,Blum Friedli GmbH,651,93.75,HIGH,5,2,1
+43c7e97b-77ee-40b3-9dee-413823538a6e,Alexis Mckinney,616,93.75,HIGH,5,2,1
+b4257a33-4685-4a2a-9add-0f28df27ea16,James Pierce,583,93.75,HIGH,5,2,1
+f351d5cd-84ed-4f0c-bc5f-cb3b7cd399a5,Alessandra Schneider,1069,93.75,HIGH,5,2,1
+f5fbd4dd-9adf-46e1-9abe-68dc28d0a710,Lucette Wolf,1034,93.75,HIGH,5,2,1
+93b86243-8bb6-4abd-95fd-336952d0094d,Artur Eugster,1694,93.75,HIGH,5,2,1
+6ac0fdcc-2d1c-4962-bfe6-a3b42e099cf8,Roos Schwab & Cie.,3590,93.75,HIGH,5,2,1
+3717b8bc-30b6-44fd-8978-af6d82e7190d,Baumann Roth AG,1386,93.75,HIGH,5,2,1
+366d5872-70a4-48f7-bce4-e54d01122da0,Schärer AG,1556,93.75,HIGH,5,2,1
+6341d291-6a24-4a10-8635-8479a8c91b8e,Claude Lanz,1551,93.75,HIGH,5,2,1
+908c6d74-9c0a-49ad-9d84-b4bafc28835e,Hürlimann & Partner,1532,93.75,HIGH,5,2,1
+5a337adf-556f-48b4-97fb-63242d2b9375,Meili Gfeller & Co.,3064,93.75,HIGH,5,2,1
+89153e73-d0b4-4e5f-a9c1-df4f7dccbf9e,Knecht & Co.,1895,93.75,HIGH,5,2,1
+b9e5c101-6b76-4180-a085-eeaebbf51a7a,Marjorie Hirt,1439,93.75,HIGH,5,2,1
+9229ac35-98b2-457e-ad44-2e5ed10e120b,Leonhard Kägi,1507,93.75,HIGH,5,2,1
+7a9d5cd9-ff28-40b6-9312-a07a2a93dd83,Marine Chrétien,985,90.0,HIGH,5,1,2
+88014606-6942-43ed-8350-221f3f12e22e,Georges Lecoq,376,90.0,HIGH,5,1,2
+d0b0ed47-41d1-4069-81df-276313677a2c,Claire Steinberg,905,90.0,HIGH,5,1,2
+1aefa671-9507-4d04-ae37-3c4c3a2695e7,Susan Gimenez,48,90.0,HIGH,5,1,2
+483a1217-8bb6-4b83-9bc7-fcb237a8fc0b,Mirko Hotz,514,89.38,HIGH,5,1,2
+37cce711-d278-4161-8a32-7fdad3b529db,Viviana Kälin,398,89.38,HIGH,5,1,2
+11841159-9b1a-4a9c-8482-174d443cd99d,Jeannine Peter,470,89.38,HIGH,5,1,2
+30b4237a-ef77-48b2-8f39-9ee846ae755d,Marlène Erni,319,89.38,HIGH,5,1,2
+b9103952-8a8d-4eb1-851e-4adec8a45147,Senn Rüegg GmbH,730,89.38,HIGH,5,1,2
+22014932-1e39-43ab-9e59-b70003f6754c,Josip Tobler,466,89.38,HIGH,5,1,2
+b16cfd38-d84e-436d-8cd0-6d97c1e87aaa,Derek Murray,315,89.38,HIGH,5,1,2
+e0b9e64b-2dd7-464e-890b-0b9f57983272,Arnaude Potier,524,89.38,HIGH,5,1,2
+9abc4d92-c3fe-4dbc-b8c3-f62674086632,Nadège Merz,534,89.38,HIGH,5,1,2
+315c378b-76d2-4ffd-a8f6-5231dade5eaa,Grob & Cie.,450,89.38,HIGH,5,1,2
+91c25251-3560-45e2-a09c-85e3f1c192bf,Geiger GmbH,534,89.38,HIGH,5,1,2
+7782671d-af9c-473c-9ba3-1da6d5acc999,Kaufmann AG,376,89.38,HIGH,5,1,2
+a4cb7d49-06e5-4ab3-93db-f2c9d6848a3d,Noemi Berger,413,89.38,HIGH,5,1,2
+6ce89bb5-c305-4686-9677-5f0f36080d73,Olivier Bühler,536,89.38,HIGH,5,1,2
+78cf2d74-d2ff-47a2-90b0-3d9b728150d2,Tanya Vogt,585,89.38,HIGH,5,1,2
+132ea703-5de6-4dc7-b43d-2c62a9b1b671,Senn Bucher & Partner,817,89.38,HIGH,5,1,2
+968bec11-04de-4043-9956-af6aa8730555,Adrienne Gautier,221,85.62,HIGH,5,0,3
+aaa3b6f3-5819-4f71-8500-8eb75e9e273f,Hafner Lutz AG,860,85.0,HIGH,4,3,1
+2ba7764b-e4bb-4a4c-84e1-8bf146905882,Tobler AG,732,85.0,HIGH,4,3,1
+f4c442af-dd50-47cf-80f5-e847f9895990,Annalisa Flückiger,1975,85.0,HIGH,5,0,3
+efd606e9-053b-491b-9012-0d9f5a016105,Wüthrich Steiger AG,921,85.0,HIGH,4,3,1
+1556147f-6f1f-4e79-a424-8767bf2c533b,Cathrin Hänel,86,84.38,HIGH,5,0,3
+abc1db44-b872-4fea-8d45-dba5f81b611a,Alessia Zimmermann,90,84.38,HIGH,5,0,3
+a00496a6-58e9-4374-a63f-8532b01a2546,Nadja Brun,108,81.25,HIGH,4,2,2
+02217201-d7a9-4fde-945c-7a4e3db530dd,Mariella Kunz,197,81.25,HIGH,4,2,2
+f71e50a2-e235-42db-9f7f-a013fcc296db,Kira Stadelmann,82,81.25,HIGH,4,2,2
+bd5fd0b2-7723-4899-bfc2-ccecd08f901b,Noëlle Wyss,331,81.25,HIGH,4,2,2
+e4203db7-e849-44df-ad96-e941e2cccb7a,José Weibel,99,81.25,HIGH,4,2,2
+7ab0e188-ba2e-46e2-8950-695811b5d54a,Tania Furrer,145,81.25,HIGH,4,2,2
+dfc31d89-f71e-4e27-a21a-41f0b2fd7e2f,Fatih Tanner,233,81.25,HIGH,4,2,2
+f2904d42-132f-48bc-8646-3f7e2f89c33c,Nohlmans,141,81.25,HIGH,4,2,2
+0a961455-04c6-4946-966e-a8e84f8ab119,Roberta Fischer,233,81.25,HIGH,4,2,2
+90083dc3-101f-4acc-80f1-4ef77dc05835,Wettstein AG,521,80.62,HIGH,4,2,2
+d8b64ed6-2257-4161-a005-6328a1e60155,Peter Zimmermann,313,80.62,HIGH,4,2,2
+7f1b9c21-ac91-4133-9926-9fa3d85f65f7,Maja Walder,233,80.62,HIGH,4,2,2
+e26f83d0-a616-44e6-a090-ffdd2da697d3,Leander Schenk,565,80.62,HIGH,4,2,2
+55c191de-a23b-49ab-8106-896738491cac,Greta Fuchs,240,80.62,HIGH,4,2,2
+49eb01d8-6854-4ec9-9a16-fbea43849810,Étienne Lebrun,229,80.62,HIGH,4,2,2
+85ec1d52-5446-4218-a679-1991de59b54c,Thea Bühlmann,327,80.62,HIGH,4,2,2
+66475e23-4adc-4004-91c8-e7bd803350db,Amela Schneider,473,80.62,HIGH,4,2,2
+fd5474f0-bc1e-437e-8727-9049a997caef,Hanni Carsten,409,80.62,HIGH,4,2,2
+ed8a1f46-0136-43fb-83fc-1ee58f62fc1f,Edina Lüscher,127,80.62,HIGH,4,2,2
+b11a3b28-abb2-4850-97f8-683174a29a02,Miguel Meili,354,80.62,HIGH,4,2,2
+7efa99b6-5200-4384-9713-cd9ac293c3e6,Portmann Frei AG,361,80.62,HIGH,4,2,2
+3afb3083-d5d6-4f07-9a96-29d627de3b59,Pietro Walter,444,80.62,HIGH,4,2,2
