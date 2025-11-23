@@ -610,11 +610,14 @@ class AccountAgent:
             session: Optional conversation session for context
         """
         # Check if this is a follow-up question using cached partner
-        partner_id = None
+        partner_id: Optional[str] = None
+        account_ids: List[str] = []
         if session:
             cached_partner = session.get_context("last_partner_id")
+            cached_accounts = session.get_context("last_account_ids") or []
             if cached_partner and self._is_followup(question):
                 partner_id = cached_partner
+                account_ids = cached_accounts
                 question = f"{question} (referring to partner {cached_partner})"
 
         if not partner_id:
@@ -622,10 +625,14 @@ class AccountAgent:
             if not resolution.partner_id:
                 return "Could not identify the partner/account from the question."
             partner_id = resolution.partner_id
+            account_ids = resolution.account_ids or self.partner_to_accounts.get(partner_id, [])
+        else:
+            account_ids = account_ids or self.partner_to_accounts.get(partner_id, [])
 
         # Store partner for follow-ups
         if session:
             session.set_context("last_partner_id", partner_id)
+            session.set_context("last_account_ids", account_ids)
 
         partner_name = self.partner_df[self.partner_df["partner_id"] == partner_id].iloc[0].get("partner_name")
         if session:
@@ -637,7 +644,7 @@ class AccountAgent:
         country_of_res = pick_country_of_residence(self.partner_country_df, partner_id)
         profile["country_of_residence"] = country_of_res
 
-        outgoing = self._outgoing_countries(self.partner_to_accounts.get(partner_id, []))
+        outgoing = self._outgoing_countries(account_ids or self.partner_to_accounts.get(partner_id, []))
         relationships = format_business_rel(self.partner_role_df, partner_id)
         associations = associated_persons(self.partner_role_df, self.partner_df, partner_id)
         resume = self._build_resume(partner_id, partner_name, onboarding_note)
@@ -732,11 +739,14 @@ class AccountAgent:
             Response chunks as they arrive
         """
         # Check if this is a follow-up question using cached partner
-        partner_id = None
+        partner_id: Optional[str] = None
+        account_ids: List[str] = []
         if session:
             cached_partner = session.get_context("last_partner_id")
+            cached_accounts = session.get_context("last_account_ids") or []
             if cached_partner and self._is_followup(question):
                 partner_id = cached_partner
+                account_ids = cached_accounts
                 question = f"{question} (referring to partner {cached_partner})"
 
         if not partner_id:
@@ -745,10 +755,14 @@ class AccountAgent:
                 yield "Could not identify the partner/account from the question."
                 return
             partner_id = resolution.partner_id
+            account_ids = resolution.account_ids or self.partner_to_accounts.get(partner_id, [])
+        else:
+            account_ids = account_ids or self.partner_to_accounts.get(partner_id, [])
 
         # Store partner for follow-ups
         if session:
             session.set_context("last_partner_id", partner_id)
+            session.set_context("last_account_ids", account_ids)
 
         partner_name = self.partner_df[self.partner_df["partner_id"] == partner_id].iloc[0].get("partner_name")
         if session:
@@ -760,7 +774,7 @@ class AccountAgent:
         country_of_res = pick_country_of_residence(self.partner_country_df, partner_id)
         profile["country_of_residence"] = country_of_res
 
-        outgoing = self._outgoing_countries(self.partner_to_accounts.get(partner_id, []))
+        outgoing = self._outgoing_countries(account_ids or self.partner_to_accounts.get(partner_id, []))
         relationships = format_business_rel(self.partner_role_df, partner_id)
 
         # Compute AML features with stdout muted
@@ -777,10 +791,19 @@ class AccountAgent:
         basic_flag = is_basic_question(question)
         watchlist_warning = ""
         if watchlist_info:
-            watchlist_warning = (
-                f"⚠️ Partner is on internal watchlist (rank {watchlist_info.get('watch_rank')}): "
-                f"{watchlist_info.get('watch_reason')}"
-            )
+            rank = watchlist_info.get("watch_rank")
+            risk_level = watchlist_info.get("overall_risk_level")
+            score = watchlist_info.get("aggregate_risk_score")
+            details = []
+            if rank:
+                details.append(f"rank {int(rank)}")
+            if risk_level:
+                details.append(f"risk={risk_level}")
+            if score is not None and not pd.isna(score):
+                details.append(f"score={score}")
+            suffix = f" ({', '.join(details)})" if details else ""
+            reason = watchlist_info.get("watch_reason") or "Flagged in top suspects list."
+            watchlist_warning = f"⚠️ Partner is on suspects list{suffix}: {reason}"
             yield watchlist_warning + "\n"
 
         user_content = (
