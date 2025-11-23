@@ -31,7 +31,7 @@ unsafe_allow_html = true
 latex = false
 
 # Autoscroll new user messages at the top of the window
-user_message_autoscroll = false
+user_message_autoscroll = true
 
 # Automatically tag threads with the current chat profile (if a chat profile is used)
 auto_tag_thread = true
@@ -103,14 +103,14 @@ cot = "hidden"
 
 # Specify a CSS file that can be used to customize the user interface.
 # The CSS file can be served from the public directory or via an external link.
-custom_css = "/public/ubs-theme.css"
+custom_css = "/public/ubs-theme.css?v=26"
 
 # Specify additional attributes for a custom CSS file
 # custom_css_attributes = "media=\"print\""
 
 # Specify a JavaScript file that can be used to customize the user interface.
 # The JavaScript file can be served from the public directory.
-custom_js = "/public/ubs-custom.js"
+custom_js = "/public/ubs-custom.js?v=24"
 
 # The style of alert boxes. Can be "classic" or "modern".
 alert_style = "classic"
