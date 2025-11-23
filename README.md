@@ -73,8 +73,6 @@ The AI report generator converts technical JSON output into natural language rep
 - Detail specific findings for each risk indicator
 - Recommend actions based on overall risk level
 - Include audit trails for compliance documentation
-- 
-```
 
 ## Technical Stack
 

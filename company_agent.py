@@ -16,7 +16,7 @@ import json
 import re
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Iterator
 
 import pandas as pd
 from langchain_core.prompts import ChatPromptTemplate
@@ -156,17 +156,95 @@ class CompanyQAAgent:
                 result[company_id] = workers
         return result
 
-    def answer(self, question: str) -> str:
-        companies = self._company_context(question)
+    def answer(
+        self,
+        question: str,
+        session: Optional[Any] = None
+    ) -> str:
+        """
+        Answer a question about companies.
+
+        Args:
+            question: User's question
+            session: Optional conversation session for context
+        """
+        # Check if this is a follow-up question
+        enhanced_question = question
+        if session:
+            last_company = session.get_context("last_company_name")
+            if last_company and self._is_followup(question):
+                enhanced_question = f"{question} (referring to: {last_company})"
+
+        companies = self._company_context(enhanced_question)
         workers = self._worker_context(companies)
 
+        # Store the company name for follow-ups
+        if session and companies:
+            session.set_context("last_company_name", companies[0].get("nom_entreprise"))
+
         messages = self.prompt.format_messages(
-            question=question,
+            question=enhanced_question,
             company_context=json.dumps(companies, ensure_ascii=False, indent=2),
             worker_context=json.dumps(workers, ensure_ascii=False, indent=2),
         )
         response = self.llm.invoke(messages)
         return response.content
+
+    def answer_stream(
+        self,
+        question: str,
+        session: Optional[Any] = None
+    ) -> Iterator[str]:
+        """
+        Stream answer to a question about companies.
+
+        Args:
+            question: User's question
+            session: Optional conversation session for context
+
+        Yields:
+            Response chunks as they arrive
+        """
+        # Check if this is a follow-up question
+        enhanced_question = question
+        if session:
+            last_company = session.get_context("last_company_name")
+            if last_company and self._is_followup(question):
+                enhanced_question = f"{question} (referring to: {last_company})"
+
+        companies = self._company_context(enhanced_question)
+        workers = self._worker_context(companies)
+
+        # Store the company name for follow-ups
+        if session and companies:
+            session.set_context("last_company_name", companies[0].get("nom_entreprise"))
+
+        messages = self.prompt.format_messages(
+            question=enhanced_question,
+            company_context=json.dumps(companies, ensure_ascii=False, indent=2),
+            worker_context=json.dumps(workers, ensure_ascii=False, indent=2),
+        )
+
+        # Stream the response
+        for chunk in self.llm.stream(messages):
+            if hasattr(chunk, 'content') and chunk.content:
+                yield chunk.content
+
+    def _is_followup(self, question: str) -> bool:
+        """Check if this is a follow-up question (e.g., 'what about them?', 'show me more')."""
+        q_lower = question.lower()
+        followup_indicators = [
+            "what about",
+            "tell me more",
+            "show me",
+            "more info",
+            "what else",
+            "also",
+            "their",
+            "them",
+            "it",
+        ]
+        return any(ind in q_lower for ind in followup_indicators) and len(question.split()) < 10
 
 
 def main() -> None:
