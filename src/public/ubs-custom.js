@@ -683,69 +683,61 @@
     'use strict';
 
     function showWelcomeMessage() {
-        const messageList = document.querySelector('.cl-message-list, div[class*="message-list"], div[class*="MessageList"], div[class*="messages"]');
-        if (!messageList) return;
-
-        const observer = new MutationObserver(() => {
-            const messages = messageList.querySelectorAll('.cl-message, div[class*="message"], div[class*="Message"]');
-            const welcomeDiv = document.getElementById('ubs-welcome-message');
-
-            if (messages.length === 0) {
-                if (!welcomeDiv) {
-                    const welcome = document.createElement('div');
-                    welcome.id = 'ubs-welcome-message';
-                    welcome.style.cssText = `
-                        position: absolute !important;
-                        top: 0 !important;
-                        left: 0 !important;
-                        right: 0 !important;
-                        bottom: 0 !important;
-                        display: flex !important;
-                        justify-content: center !important;
-                        align-items: center !important;
-                        font-size: 28px !important;
-                        font-weight: 500 !important;
-                        color: #666666 !important;
-                        pointer-events: none !important;
-                        z-index: 1 !important;
-                    `;
-                    welcome.textContent = 'Hello Compliance Officer';
-                    messageList.style.position = 'relative';
-                    messageList.appendChild(welcome);
-                }
-            } else {
-                if (welcomeDiv) {
-                    welcomeDiv.remove();
-                }
-            }
-        });
-
-        observer.observe(messageList, { childList: true, subtree: true });
-
-        // Initial check
-        const messages = messageList.querySelectorAll('.cl-message, div[class*="message"], div[class*="Message"]');
-        if (messages.length === 0) {
-            const welcome = document.createElement('div');
-            welcome.id = 'ubs-welcome-message';
-            welcome.style.cssText = `
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
+        // Create a standalone overlay so it works even if we cannot find the list immediately
+        let overlay = document.getElementById('ubs-welcome-message');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'ubs-welcome-message';
+            overlay.style.cssText = `
+                position: fixed !important;
+                inset: 0 !important;
                 display: flex !important;
                 justify-content: center !important;
                 align-items: center !important;
                 font-size: 28px !important;
                 font-weight: 500 !important;
-                color: #666666 !important;
+                color: #111111 !important;
                 pointer-events: none !important;
-                z-index: 1 !important;
+                z-index: 10 !important;
+                background: linear-gradient(180deg, #000000 0%, #333333 100%) !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+                text-fill-color: transparent !important;
+                text-shadow: 0 1px 2px rgba(0,0,0,0.15) !important;
+                text-align: center !important;
+                transform: translateY(-18%) !important;
             `;
-            welcome.textContent = 'Hello Compliance Officer';
-            messageList.style.position = 'relative';
-            messageList.appendChild(welcome);
+            overlay.textContent = 'Welcome Back, Compliance Officer';
+            document.body.appendChild(overlay);
+
+            // Disable scrolling while the welcome overlay is shown
+            if (!document.body.dataset.ubsOriginalOverflow) {
+                document.body.dataset.ubsOriginalOverflow = document.body.style.overflow || '';
+            }
+            if (!document.documentElement.dataset.ubsOriginalOverflow) {
+                document.documentElement.dataset.ubsOriginalOverflow = document.documentElement.style.overflow || '';
+            }
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
         }
+
+        function hideOverlayIfMessagesExist() {
+            const anyMessage = document.querySelector('.cl-message, div[class*="message"], div[class*="Message"]');
+            if (anyMessage && overlay) {
+                overlay.remove();
+                // Restore original scroll behavior once chat begins
+                document.body.style.overflow = document.body.dataset.ubsOriginalOverflow || '';
+                document.documentElement.style.overflow = document.documentElement.dataset.ubsOriginalOverflow || '';
+            }
+        }
+
+        // Observe the whole document for messages instead of a specific list
+        const observer = new MutationObserver(() => hideOverlayIfMessagesExist());
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // Also run an initial check in case messages are already present
+        hideOverlayIfMessagesExist();
     }
 
     if (document.readyState === 'loading') {
