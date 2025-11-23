@@ -104,6 +104,24 @@ def _similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
 
 
+def _partial_ratio(a: str, b: str) -> float:
+    """
+    Fuzzy substring match similar to fuzzywuzzy.partial_ratio.
+    Helps when the question contains many extra words around the name.
+    """
+    if not a or not b:
+        return 0.0
+    short, long = (a, b) if len(a) <= len(b) else (b, a)
+    best = 0.0
+    # Slide a window of the short string's length across the long string
+    for i in range(0, len(long) - len(short) + 1):
+        window = long[i : i + len(short)]
+        best = max(best, SequenceMatcher(None, short, window).ratio())
+        if best == 1.0:
+            break
+    return best
+
+
 def load_suspicious_industries() -> List[str]:
     """
     Read suspicious_industries from add_suspicious_industries.py without executing it.
@@ -462,7 +480,9 @@ class AccountAgent:
         best_id: Optional[str] = None
         for _, row in self.partner_df.iterrows():
             name = row.get("partner_name", "")
-            score = _similarity(q_norm, _normalize(name))
+            name_norm = _normalize(name)
+            # Use both full-string and partial matches to avoid long-question dilution
+            score = max(_similarity(q_norm, name_norm), _partial_ratio(name_norm, q_norm))
             if score > best_score:
                 best_score = score
                 best_id = row["partner_id"]
