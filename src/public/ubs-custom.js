@@ -165,16 +165,16 @@
             });
         }
         
-        // Enhanced Send Icon Management - UBS Red
-        function forceSendIconRed() {
+        // Enhanced Send Button Management - UBS Red RECTANGULAR Button
+        function forceRectangularRedButton() {
             const allButtons = document.querySelectorAll('button, [role="button"]');
-            
+
             allButtons.forEach(button => {
                 const ariaLabel = button.getAttribute('aria-label') || '';
                 const title = button.getAttribute('title') || '';
                 const type = button.getAttribute('type') || '';
                 const className = button.className.toLowerCase();
-                
+
                 // Skip non-send buttons (copy, theme, logo, etc.)
                 if (
                     ariaLabel.toLowerCase().includes('copy') ||
@@ -189,9 +189,9 @@
                 ) {
                     return;
                 }
-                
+
                 // Target send/submit buttons specifically
-                const isSendButton = 
+                const isSendButton =
                     type === 'submit' ||
                     ariaLabel.toLowerCase().includes('send') ||
                     ariaLabel.toLowerCase().includes('submit') ||
@@ -202,43 +202,72 @@
                     button.closest('.cl-input-container') ||
                     button.closest('[class*="input"]') ||
                     button.closest('form');
-                
+
                 if (isSendButton) {
-                    // Clean button styling
+                    // BEAUTIFUL RECTANGULAR RED BUTTON STYLING (UBS theme)
                     button.style.cssText += `
-                        background: transparent !important;
+                        background: linear-gradient(135deg, #E60000 0%, #C00000 100%) !important;
                         border: none !important;
-                        color: #E60000 !important;
-                        padding: 8px !important;
-                        border-radius: 50% !important;
-                        transition: all 0.2s ease !important;
-                        width: 40px !important;
-                        height: 40px !important;
+                        color: #FFFFFF !important;
+                        padding: 10px 18px !important;
+                        border-radius: 0px !important;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        min-width: 75px !important;
+                        height: 42px !important;
                         display: flex !important;
                         align-items: center !important;
                         justify-content: center !important;
+                        margin-left: 10px !important;
+                        font-weight: 700 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.8px !important;
+                        box-shadow: 0 2px 8px rgba(230, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+                        cursor: pointer !important;
+                        position: relative !important;
+                        overflow: hidden !important;
                     `;
-                    
-                    // Force UBS red on all icons within the button
+
+                    // Force WHITE color on all icons within the red rectangular button - bigger and prettier
                     const icons = button.querySelectorAll('svg, svg *, path, circle, rect, polygon, line');
                     icons.forEach(icon => {
                         icon.style.cssText += `
-                            color: #E60000 !important;
-                            fill: #E60000 !important;
-                            stroke: #E60000 !important;
-                            stroke-width: 2px !important;
+                            color: #FFFFFF !important;
+                            fill: #FFFFFF !important;
+                            stroke: #FFFFFF !important;
+                            stroke-width: 2.5px !important;
+                            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) !important;
                         `;
                     });
-                    
-                    // Add hover animation
+
+                    // Make arrow icon bigger
+                    const svg = button.querySelector('svg');
+                    if (svg) {
+                        svg.style.width = '22px';
+                        svg.style.height = '22px';
+                    }
+
+                    // Add prettier hover animation for red rectangular button
                     button.addEventListener('mouseenter', () => {
-                        button.style.background = 'rgba(230, 0, 0, 0.1)';
-                        button.style.transform = 'scale(1.05)';
+                        button.style.background = 'linear-gradient(135deg, #C00000 0%, #E60000 100%) !important';
+                        button.style.transform = 'translateY(-2px)';
+                        button.style.boxShadow = '0 4px 16px rgba(230, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15) !important';
                     });
-                    
+
                     button.addEventListener('mouseleave', () => {
-                        button.style.background = 'transparent';
-                        button.style.transform = 'scale(1)';
+                        button.style.background = 'linear-gradient(135deg, #E60000 0%, #C00000 100%) !important';
+                        button.style.transform = 'translateY(0)';
+                        button.style.boxShadow = '0 2px 8px rgba(230, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1) !important';
+                    });
+
+                    // Active/pressed state
+                    button.addEventListener('mousedown', () => {
+                        button.style.transform = 'translateY(0)';
+                        button.style.boxShadow = '0 1px 4px rgba(230, 0, 0, 0.3) !important';
+                    });
+
+                    button.addEventListener('mouseup', () => {
+                        button.style.transform = 'translateY(-2px)';
+                        button.style.boxShadow = '0 4px 16px rgba(230, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15) !important';
                     });
                 }
             });
@@ -274,12 +303,12 @@
         // New Chat Confirmation
         function addNewChatConfirmation() {
             const buttons = document.querySelectorAll('button, a, [role="button"]');
-            
+
             buttons.forEach(button => {
                 const ariaLabel = button.getAttribute('aria-label') || '';
                 const title = button.getAttribute('title') || '';
                 const text = button.textContent?.trim() || '';
-                
+
                 if (
                     ariaLabel.toLowerCase().includes('new') ||
                     title.toLowerCase().includes('new') ||
@@ -289,11 +318,11 @@
                 ) {
                     // Add confirmation dialog
                     const originalClick = button.onclick || button.onsubmit;
-                    
+
                     button.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        
+
                         if (confirm('Are you sure you want to start a new conversation? Your current conversation will be saved.')) {
                             if (originalClick) {
                                 originalClick.call(button, e);
@@ -383,7 +412,7 @@
         function initializeUBSTheme() {
             createHeaderBar();  // NEW: Create the simple white header bar
             manageUBSLogo();
-            forceSendIconRed();
+            forceRectangularRedButton();  // UBS Beautiful Rectangular Red Button
             addProfessionalAnimations();
             addNewChatConfirmation();
             enforceMessageStyling();
@@ -418,7 +447,7 @@
         
         // Periodic cleanup for dynamic elements
         setInterval(() => {
-            forceSendIconRed();
+            forceRectangularRedButton();  // Keep beautiful rectangular red button applied
             manageUBSLogo();
             enforceMessageStyling();
         }, 500);
