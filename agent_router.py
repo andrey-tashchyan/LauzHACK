@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
+import re
 from pathlib import Path
 from typing import Any, Optional, Iterator
 
@@ -62,6 +63,69 @@ class AgentRouter:
         """
         lowered = question.lower()
         return any(term in lowered for term in FEATURE_TERMS)
+
+    def _looks_like_sparse_name(self, question: str) -> bool:
+        """
+        Detect very short inputs that look like just a name (1-4 tokens, no digits).
+        """
+        cleaned = question.strip()
+        if not cleaned or len(cleaned) > 80:
+            return False
+        if any(ch.isdigit() for ch in cleaned):
+            return False
+        tokens = re.findall(r"[A-Za-z][A-Za-z'\\-]*", cleaned)
+        return 1 <= len(tokens) <= 4
+
+    def _is_not_found_response(self, text: str) -> bool:
+        """
+        Identify when an agent reply indicates no match was found.
+        """
+        lowered = (text or "").lower()
+        hints = [
+            "could not identify",
+            "could not find",
+            "no company found",
+            "no match",
+            "not match",
+            "not found",
+            "unavailable",
+            "missing agent",
+        ]
+        return any(h in lowered for h in hints)
+
+    def _fallback_name_lookup(
+        self,
+        question: str,
+        session: Optional[ConversationSession] = None,
+    ) -> Optional[str]:
+        """
+        For sparse inputs (just a name), try account_agent first, then company_agent.
+        """
+        # Try account agent
+        account_body = self._run_script("account_agent.py", question)
+        if not self._is_not_found_response(account_body):
+            destination = "account_info"
+            task = "account_name_fallback"
+            if session:
+                session.add_message("user", question)
+                session.set_context("last_destination", destination)
+                session.set_context("last_task", task)
+                session.add_message("assistant", account_body, destination=destination, task=task)
+            return f"[{destination}:{task}] {account_body}"
+
+        # Try company agent next
+        company_body = self._run_company_agent(question, session)
+        if not self._is_not_found_response(company_body):
+            destination = "company_info"
+            task = "company_name_fallback"
+            if session:
+                session.add_message("user", question)
+                session.set_context("last_destination", destination)
+                session.set_context("last_task", task)
+                session.add_message("assistant", company_body, destination=destination, task=task)
+            return f"[{destination}:{task}] {company_body}"
+
+        return f"[unrelated:name_fallback] No account or company matches '{question}'."
 
     def _run_script(self, script_name: str, question: str) -> str:
         """
@@ -130,6 +194,12 @@ class AgentRouter:
             question: User's question
             session: Optional conversation session for context
         """
+        # Sparse name fallback: try account_agent then company_agent directly
+        if self._looks_like_sparse_name(question):
+            fallback = self._fallback_name_lookup(question, session=session)
+            if fallback:
+                return fallback
+
         # Shortcut: explicit feature questions should go to account_agent directly
         feature_override = self._is_feature_request(question)
         if feature_override:
@@ -193,6 +263,13 @@ class AgentRouter:
         Yields:
             Response chunks as they arrive
         """
+        # Sparse name fallback (non-streaming for simplicity)
+        if self._looks_like_sparse_name(question):
+            result = self._fallback_name_lookup(question, session=session)
+            if result:
+                yield result
+                return
+
         feature_override = self._is_feature_request(question)
         if feature_override:
             route_result = RouteQuery(destination="account_info", task="account_feature_analysis", confidence=1.0)
