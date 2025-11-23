@@ -20,6 +20,25 @@ except Exception:
 
 
 ROOT = Path(__file__).resolve().parent
+FEATURE_TERMS = {
+    "feature",
+    "aml feature",
+    "transaction frequency",
+    "frequency",
+    "burst",
+    "structuring",
+    "atypical",
+    "cross border",
+    "cross-border",
+    "counterparty",
+    "counterparties",
+    "irregularity",
+    "night activity",
+    "ephemeral",
+    "abnormal activity",
+    "account age",
+    "multiplicity",
+}
 
 
 class AgentRouter:
@@ -36,6 +55,13 @@ class AgentRouter:
         self.company_model = company_model or model
         self.route_chain = create_route_chain(model=model)
         self._company_agent: Optional[Any] = None
+
+    def _is_feature_request(self, question: str) -> bool:
+        """
+        Heuristic to shortcut routing when the user explicitly asks for AML features.
+        """
+        lowered = question.lower()
+        return any(term in lowered for term in FEATURE_TERMS)
 
     def _run_script(self, script_name: str, question: str) -> str:
         """
@@ -104,17 +130,24 @@ class AgentRouter:
             question: User's question
             session: Optional conversation session for context
         """
-        try:
-            route_result: RouteQuery = self.route_chain.invoke({"question": question})
-            print(f"DEBUG: route_result = {route_result}")  # Debug logging
-        except Exception as exc:  # pragma: no cover - defensive guard
-            return f"[routing_error] Failed to classify request: {exc}"
+        # Shortcut: explicit feature questions should go to account_agent directly
+        feature_override = self._is_feature_request(question)
+        if feature_override:
+            route_result = RouteQuery(destination="account_info", task="account_feature_analysis", confidence=1.0)
+            destination = "account_info"
+            task = "account_feature_analysis"
+        else:
+            try:
+                route_result = self.route_chain.invoke({"question": question})
+                print(f"DEBUG: route_result = {route_result}")  # Debug logging
+            except Exception as exc:  # pragma: no cover - defensive guard
+                return f"[routing_error] Failed to classify request: {exc}"
 
-        if route_result is None:
-            return "[routing_error] The routing model returned None. Please try again."
+            if route_result is None:
+                return "[routing_error] The routing model returned None. Please try again."
 
-        destination = route_result.destination
-        task = route_result.task
+            destination = route_result.destination
+            task = route_result.task
 
         # Store routing decision in session
         if session:
@@ -160,19 +193,25 @@ class AgentRouter:
         Yields:
             Response chunks as they arrive
         """
-        try:
-            route_result: RouteQuery = self.route_chain.invoke({"question": question})
-            print(f"DEBUG: route_result = {route_result}")
-        except Exception as exc:
-            yield f"[routing_error] Failed to classify request: {exc}"
-            return
+        feature_override = self._is_feature_request(question)
+        if feature_override:
+            route_result = RouteQuery(destination="account_info", task="account_feature_analysis", confidence=1.0)
+            destination = "account_info"
+            task = "account_feature_analysis"
+        else:
+            try:
+                route_result = self.route_chain.invoke({"question": question})
+                print(f"DEBUG: route_result = {route_result}")
+            except Exception as exc:
+                yield f"[routing_error] Failed to classify request: {exc}"
+                return
 
-        if route_result is None:
-            yield "[routing_error] The routing model returned None. Please try again."
-            return
+            if route_result is None:
+                yield "[routing_error] The routing model returned None. Please try again."
+                return
 
-        destination = route_result.destination
-        task = route_result.task
+            destination = route_result.destination
+            task = route_result.task
 
         # Store routing decision
         if session:
