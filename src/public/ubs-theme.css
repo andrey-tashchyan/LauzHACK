@@ -1,281 +1,486 @@
-/* ============================================================================
-   UBS Theme - Message Bubbles Only
-   Clean white rectangle message bubbles with small shadows
-   ============================================================================ */
-
+/* UBS Enhanced Theme - Professional Corporate Styling */
 :root {
-  /* UBS Colors */
+  /* UBS Color Palette */
   --ubs-red: #E60000;
-  --ubs-red-light: #FF1A1A;
+  --ubs-red-dark: #C00000;
   --ubs-white: #FFFFFF;
-  --ubs-grey-50: #FAFAFA;
-  --ubs-grey-200: #EEEEEE;
-  --ubs-grey-300: #E0E0E0;
-  --ubs-grey-400: #BDBDBD;
-  --ubs-grey-600: #757575;
-  --ubs-grey-900: #212121;
+  --ubs-black: #000000;
+  --ubs-grey-light: #F5F5F5;
+  --ubs-grey: #757575;
+  --ubs-grey-dark: #333333;
+  --ubs-blue: #003087; /* UBS corporate blue for accents */
 
-  /* Message bubble shadow */
-  --bubble-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --bubble-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.12), 0 2px 3px rgba(0, 0, 0, 0.08);
+  /* Spacing and shadows - UBS Rectangle Bubbles */
+  --border-radius: 0px; /* Rectangle = no border radius */
+  --shadow-ubs: 0 2px 8px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04); /* UBS professional shadow */
+  --shadow-ubs-hover: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06); /* Elevated shadow */
+  --shadow-light: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* ============================================================================
-   GLOBAL - Subtle UBS-style background pattern
-   ============================================================================ */
-
-body {
-  background: var(--ubs-grey-50) !important;
-  /* Subtle UBS-style background pattern for chat area */
-  background-image:
-    linear-gradient(0deg, rgba(0, 48, 135, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 48, 135, 0.015) 1px, transparent 1px),
-    linear-gradient(45deg, rgba(230, 0, 0, 0.008) 25%, transparent 25%, transparent 75%, rgba(230, 0, 0, 0.008) 75%, rgba(230, 0, 0, 0.008)),
-    linear-gradient(-45deg, rgba(230, 0, 0, 0.008) 25%, transparent 25%, transparent 75%, rgba(230, 0, 0, 0.008) 75%, rgba(230, 0, 0, 0.008)) !important;
-  background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px !important;
-  background-position: 0 0, 0 0, 0 0, 40px 40px !important;
+/* UBS Typography - Clean, professional sans-serif */
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
-/* ============================================================================
-   HEADER - Red accent bar
-   ============================================================================ */
-
-.cl-header::before,
-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--ubs-red) 0%, #C00000 100%);
-  z-index: 1001;
+/* Hide Chainlit's default logo and force UBS branding */
+.cl-header .cl-logo,
+.cl-header img:not([src*="ubs_logo"]) {
+  display: none !important;
 }
 
-/* ============================================================================
-   MESSAGE BUBBLES
-   ============================================================================ */
+/* Force UBS logo display in header */
+.cl-header .cl-logo[src*="ubs_logo"],
+img[src*="ubs_logo"] {
+  display: block !important;
+  max-height: 40px !important;
+  width: auto !important;
+  margin: 0 auto 16px !important;
+}
 
-/* Reset ALL message containers */
-.cl-message,
-.cl-step,
-.MuiPaper-root,
-div[class*="message"],
-div[class*="Message"],
-div[class*="step"],
-div[class*="Step"] {
+/* Header styling - Clean UBS corporate header */
+.cl-header {
+  background: var(--ubs-white) !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+  padding: 16px 24px !important;
+  box-shadow: var(--shadow-light) !important;
+  position: relative !important;
+}
+
+.cl-header h1,
+.cl-header .cl-title {
+  color: var(--ubs-black) !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  text-align: center !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Chat container - Clean white background */
+.cl-root {
+  background: var(--ubs-white) !important;
+  color: var(--ubs-black) !important;
+}
+
+/* ============================================ */
+/* MESSAGE BUBBLES - REDESIGNED FROM SCRATCH   */
+/* All white, rectangle, UBS shadows           */
+/* ============================================ */
+
+/* Base message bubble - White rectangle with UBS shadow */
+.cl-message {
+  background: var(--ubs-white) !important;
+  border-radius: var(--border-radius) !important; /* 0px = rectangle */
+  border: 1px solid #E8E8E8 !important;
+  box-shadow: var(--shadow-ubs) !important; /* UBS professional shadow */
+  margin: 12px 16px !important;
+  padding: 20px 24px !important;
+  position: relative !important;
+  max-width: 75% !important;
+  transition: all 0.2s ease !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.cl-message:hover {
+  box-shadow: var(--shadow-ubs-hover) !important; /* Elevated on hover */
+  transform: translateY(-1px) !important;
+}
+
+/* User messages - White rectangle, right-aligned */
+.cl-message-user {
+  background: var(--ubs-white) !important;
+  border: 1px solid #E8E8E8 !important;
+  border-left: 4px solid var(--ubs-red) !important; /* Red accent on left */
+  box-shadow: var(--shadow-ubs) !important;
+  margin-left: auto !important; /* Push to right */
+  margin-right: 16px !important;
+  color: var(--ubs-grey-dark) !important;
+  border-radius: var(--border-radius) !important; /* Rectangle */
+}
+
+.cl-message-user:hover {
+  box-shadow: var(--shadow-ubs-hover) !important;
+  border-left-color: var(--ubs-red-dark) !important;
+}
+
+.cl-message-user .cl-message-content {
+  color: var(--ubs-grey-dark) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+}
+
+.cl-message-user .cl-author {
+  color: var(--ubs-red) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* AI messages - White rectangle, left-aligned */
+.cl-message-ai {
+  background: var(--ubs-white) !important;
+  border: 1px solid #E8E8E8 !important;
+  border-left: 4px solid var(--ubs-blue) !important; /* Blue accent on left */
+  box-shadow: var(--shadow-ubs) !important;
+  margin-left: 16px !important;
+  margin-right: auto !important; /* Keep on left */
+  color: var(--ubs-grey-dark) !important;
+  border-radius: var(--border-radius) !important; /* Rectangle */
+}
+
+.cl-message-ai:hover {
+  box-shadow: var(--shadow-ubs-hover) !important;
+  border-left-color: var(--ubs-red) !important; /* Change to red on hover */
+}
+
+.cl-message-ai .cl-message-content {
+  color: var(--ubs-grey-dark) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+}
+
+.cl-message-ai .cl-author {
+  color: var(--ubs-blue) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Message container wrapper - ensure proper spacing */
+.cl-message-container,
+[class*="message-container"],
+[class*="MessageContainer"] {
+  display: flex !important;
+  flex-direction: column !important;
+  margin-bottom: 16px !important;
+}
+
+/* Message body/content area */
+.cl-message-body,
+.cl-message-content-wrapper,
+[class*="message-body"],
+[class*="MessageBody"] {
   background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  border-radius: var(--border-radius) !important; /* Rectangle */
   padding: 0 !important;
   margin: 0 !important;
 }
 
-/* White rectangle message bubbles */
-.cl-message-content,
-.cl-step-content,
-[class*="message-content"],
-[class*="MessageContent"],
-[class*="step-content"],
-[class*="StepContent"] {
-  /* White rectangle */
+/* Ensure all nested elements maintain white background */
+.cl-message * {
+  border-radius: var(--border-radius) !important; /* Rectangle for all nested elements */
+}
+
+.cl-message p,
+.cl-message div,
+.cl-message span {
+  color: var(--ubs-grey-dark) !important;
+}
+
+/* Remove any gradient backgrounds from messages */
+.cl-message-user,
+.cl-message-ai,
+.cl-message {
+  background-image: none !important;
   background: var(--ubs-white) !important;
+}
 
-  /* Small shadow */
-  box-shadow: var(--bubble-shadow) !important;
+/* Avatar styling - UBS branding */
+.cl-avatar {
+  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-blue) 100%) !important;
+  border-radius: 50% !important;
+  box-shadow: var(--shadow-light) !important;
+}
 
-  /* Sharp corners */
-  border-radius: 0 !important;
+.cl-avatar-user .cl-avatar-img {
+  background: var(--ubs-white) !important;
+  color: var(--ubs-red) !important;
+  font-weight: 600 !important;
+}
 
-  /* No border by default */
-  border: none !important;
+.cl-avatar-ai .cl-avatar-img {
+  background: var(--ubs-red) !important;
+  color: var(--ubs-white) !important;
+}
 
-  /* Padding */
-  padding: 18px 20px !important;
+/* Input area - Clean, professional */
+.cl-input-container {
+  background: var(--ubs-white) !important;
+  border-top: 1px solid #E0E0E0 !important;
+  padding: 16px 24px !important;
+  box-shadow: var(--shadow-light) !important;
+}
 
-  /* Text */
-  color: var(--ubs-grey-900) !important;
-  font-size: 15px !important;
-  line-height: 1.6 !important;
-
-  /* Width - fit content naturally */
-  max-width: fit-content !important;
-  display: inline-block !important;
-
-  /* Transition */
+.cl-input {
+  background: var(--ubs-white) !important;
+  border: 2px solid #E0E0E0 !important;
+  border-radius: var(--border-radius) !important;
+  color: var(--ubs-grey-dark) !important;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
   transition: all 0.2s ease !important;
 }
 
-/* AI/Assistant messages - left with red accent */
-.cl-message.cl-assistant-message .cl-message-content,
-.cl-message.cl-ai-message .cl-message-content,
-.cl-step.cl-assistant-step .cl-step-content,
-div[class*="assistant"] .cl-message-content,
-div[class*="ai"] .cl-message-content {
-  border-left: 3px solid var(--ubs-red) !important;
-  margin-right: auto !important;
-  margin-left: 0 !important;
+.cl-input:focus {
+  border-color: var(--ubs-red) !important;
+  box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1) !important;
+  outline: none !important;
 }
 
-.cl-message.cl-assistant-message .cl-message-content:hover,
-.cl-message.cl-ai-message .cl-message-content:hover,
-div[class*="assistant"] .cl-message-content:hover {
-  box-shadow: var(--bubble-shadow-hover) !important;
-  border-left-color: var(--ubs-red-light) !important;
-}
-
-/* User messages - right with gray accent */
-.cl-message.cl-user-message .cl-message-content,
-div[class*="user"] .cl-message-content {
-  border-right: 3px solid var(--ubs-grey-400) !important;
-  margin-left: auto !important;
-  margin-right: 0 !important;
-  background: var(--ubs-grey-50) !important;
-}
-
-.cl-message.cl-user-message .cl-message-content:hover,
-div[class*="user"] .cl-message-content:hover {
-  box-shadow: var(--bubble-shadow-hover) !important;
-  border-right-color: var(--ubs-grey-600) !important;
-}
-
-/* Container alignment */
-.cl-message.cl-user-message,
-div[class*="user-message"] {
-  display: flex !important;
-  justify-content: flex-end !important;
-  width: 100% !important;
-  margin-bottom: 32px !important;
-  padding: 0 16px !important;
-}
-
-.cl-message.cl-assistant-message,
-.cl-message.cl-ai-message,
-div[class*="assistant-message"],
-div[class*="ai-message"] {
-  display: flex !important;
-  justify-content: flex-start !important;
-  width: 100% !important;
-  margin-bottom: 32px !important;
-  padding: 0 16px !important;
-}
-
-/* Clean text inside bubbles */
-.cl-message-content *,
-.cl-step-content * {
-  background: transparent !important;
+/* Send button - Beautiful UBS red RECTANGULAR button */
+.cl-send-button,
+.cl-input-container button[type="submit"],
+button[aria-label*="send" i],
+button[aria-label*="submit" i] {
+  background: linear-gradient(135deg, var(--ubs-red) 0%, #C00000 100%) !important;
   border: none !important;
-  box-shadow: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  color: var(--ubs-white) !important;
+  padding: 10px 18px !important;
+  border-radius: var(--border-radius) !important; /* Rectangle - 0px radius */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  min-width: 75px !important;
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  box-shadow: 0 2px 8px rgba(230, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
-.cl-message-content p + p {
-  margin-top: 12px !important;
+/* Prettier hover effect */
+.cl-send-button:hover,
+.cl-input-container button[type="submit"]:hover,
+button[aria-label*="send" i]:hover,
+button[aria-label*="submit" i]:hover {
+  background: linear-gradient(135deg, #C00000 0%, var(--ubs-red) 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 16px rgba(230, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Hide avatars */
-.cl-avatar,
-[class*="avatar"],
-svg[data-testid="PersonIcon"],
-svg[data-testid="SmartToyIcon"] {
-  display: none !important;
+/* Active/pressed state */
+.cl-send-button:active,
+.cl-input-container button[type="submit"]:active,
+button[aria-label*="send" i]:active,
+button[aria-label*="submit" i]:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 1px 4px rgba(230, 0, 0, 0.3) !important;
 }
 
-/* ============================================================================
-   HIDE THEME TOGGLE
-   ============================================================================ */
+/* Force send icon to white on red button - bigger and prettier */
+.cl-send-button svg,
+.cl-send-button svg *,
+.cl-input-container button[type="submit"] svg,
+.cl-input-container button[type="submit"] svg *,
+button[aria-label*="send" i] svg,
+button[aria-label*="send" i] svg *,
+button[aria-label*="submit" i] svg,
+button[aria-label*="submit" i] svg * {
+  color: var(--ubs-white) !important;
+  fill: var(--ubs-white) !important;
+  stroke: var(--ubs-white) !important;
+  stroke-width: 2.5px !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) !important;
+}
 
+/* Make the arrow icon bigger */
+.cl-send-button svg,
+.cl-input-container button[type="submit"] svg,
+button[aria-label*="send" i] svg,
+button[aria-label*="submit" i] svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* Primary buttons - UBS red rectangular */
+.MuiButton-contained,
+.MuiButton-containedPrimary,
+.cl-button-primary,
+button[class*="primary"],
+button[class*="Primary"] {
+  background: linear-gradient(135deg, var(--ubs-red) 0%, var(--ubs-red-dark) 100%) !important;
+  color: var(--ubs-white) !important;
+  border: none !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 12px 24px !important;
+  box-shadow: var(--shadow-medium) !important;
+  transition: all 0.2s ease !important;
+}
+
+.MuiButton-contained:hover,
+.MuiButton-containedPrimary:hover,
+.cl-button-primary:hover,
+button[class*="primary"]:hover,
+button[class*="Primary"]:hover {
+  background: linear-gradient(135deg, var(--ubs-red-dark) 0%, var(--ubs-red) 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(230, 0, 0, 0.3) !important;
+}
+
+/* Secondary buttons - Clean grey */
+.MuiButton-outlined,
+.MuiButton-text,
+.cl-button-secondary,
+button[class*="secondary"],
+button[class*="Secondary"] {
+  background: transparent !important;
+  color: var(--ubs-grey-dark) !important;
+  border: 2px solid #E0E0E0 !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  padding: 10px 20px !important;
+  transition: all 0.2s ease !important;
+}
+
+.MuiButton-outlined:hover,
+.MuiButton-text:hover,
+.cl-button-secondary:hover,
+button[class*="secondary"]:hover,
+button[class*="Secondary"]:hover {
+  background: var(--ubs-grey-light) !important;
+  border-color: var(--ubs-red) !important;
+  color: var(--ubs-red) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Links - UBS red */
+a,
+.cl-link {
+  color: var(--ubs-red) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: color 0.2s ease !important;
+}
+
+a:hover,
+.cl-link:hover {
+  color: var(--ubs-red-dark) !important;
+  text-decoration: underline !important;
+}
+
+/* Typography hierarchy */
+h1, .cl-h1 { color: var(--ubs-black) !important; font-size: 28px !important; font-weight: 700 !important; margin: 24px 0 16px !important; }
+h2, .cl-h2 { color: var(--ubs-black) !important; font-size: 24px !important; font-weight: 600 !important; margin: 20px 0 12px !important; }
+h3, .cl-h3 { color: var(--ubs-grey-dark) !important; font-size: 20px !important; font-weight: 600 !important; margin: 16px 0 8px !important; }
+p, .cl-p, .cl-message-content { color: var(--ubs-grey-dark) !important; margin: 12px 0 !important; }
+
+/* Code blocks - Professional styling */
+pre, code {
+  background: #FAFAFA !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: var(--border-radius) !important;
+  color: var(--ubs-grey-dark) !important;
+  padding: 16px !important;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace !important;
+  overflow-x: auto !important;
+}
+
+/* Scrollbars - Subtle UBS styling */
+::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F1F1 !important;
+  border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ubs-grey) !important;
+  border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ubs-red) !important;
+}
+
+/* Loading indicators - UBS red */
+.cl-loading,
+.cl-spinner {
+  color: var(--ubs-red) !important;
+  border-color: var(--ubs-red) !important;
+}
+
+/* Hide theme toggle buttons */
 button[aria-label*="theme" i],
-button[title*="theme" i],
-svg[data-testid*="Brightness"],
-svg[data-testid*="DarkMode"],
-svg[data-testid*="LightMode"],
-.MuiIconButton-root:has(svg[data-testid*="Brightness"]),
-.MuiIconButton-root:has(svg[data-testid*="DarkMode"]),
-.MuiIconButton-root:has(svg[data-testid*="LightMode"]) {
+button[aria-label*="dark mode" i],
+button[aria-label*="light mode" i],
+button[id*="theme" i],
+.MuiIconButton-root[title*="theme" i],
+.MuiIconButton-root[title*="dark" i],
+.MuiIconButton-root[title*="light" i],
+svg[data-testid*="Brightness" i],
+svg[data-testid*="DarkMode" i],
+svg[data-testid*="LightMode" i] {
   display: none !important;
-  visibility: hidden !important;
 }
 
-/* ============================================================================
-   MOBILE RESPONSIVE
-   ============================================================================ */
+/* Ensure all text is readable */
+body, p, span, div, .cl-text {
+  color: var(--ubs-grey-dark) !important;
+}
 
+/* Footer - Clean UBS styling */
+.cl-footer {
+  background: var(--ubs-white) !important;
+  border-top: 1px solid #E0E0E0 !important;
+  color: var(--ubs-grey) !important;
+  padding: 16px 24px !important;
+  font-size: 14px !important;
+  text-align: center !important;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .cl-message-content,
-  .cl-step-content {
-    max-width: fit-content !important;
-    padding: 14px 16px !important;
-    font-size: 14px !important;
+  .cl-header {
+    padding: 12px 16px !important;
+  }
+
+  .cl-message {
+    margin: 8px 12px !important;
+    padding: 12px !important;
+  }
+
+  .cl-input-container {
+    padding: 12px 16px !important;
+  }
+
+  .cl-header h1,
+  .cl-header .cl-title {
+    font-size: 20px !important;
   }
 }
 
-
-
-/* --- HEADER FIXE UBS × LauzHack --- */
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
-}
-
-/* Barre fixe en haut de la page */
-#ubs-top-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  z-index: 9999;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 24px;
-
-  background: rgba(15, 23, 42, 0.95);      /* fond sombre type UBS */
-  color: #ffffff;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.5);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Helvetica Neue", Arial, sans-serif;
-}
-
-/* Partie gauche : titre + sous-titre */
-#ubs-top-header .ubs-header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-#ubs-top-header .ubs-header-title {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-#ubs-top-header .ubs-header-subtitle {
-  font-size: 13px;
-  opacity: 0.85;
-}
-
-/* Badge à droite (optionnel) */
-#ubs-top-header .ubs-header-badge {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #f97373;
-  color: #1f2933;
-  font-weight: 600;
+/* Override any remaining Chainlit pink/purple colors */
+* {
+  --primary-color: var(--ubs-red) !important;
+  --primary: var(--ubs-red) !important;
+  --secondary-color: var(--ubs-grey) !important;
+  --background-color: var(--ubs-white) !important;
+  --surface-color: var(--ubs-grey-light) !important;
+  --text-primary: var(--ubs-black) !important;
+  --text-secondary: var(--ubs-grey-dark) !important;
 }
 
 /* ============================================================================
-   NEW: Simple White Header Bar with Logo
+   UBS HEADER BAR - Simple White Header with Logo
    ============================================================================ */
 
 #ubs-header-bar {
@@ -301,7 +506,7 @@ body {
 }
 
 /* ============================================================================
-   Quick Actions Toolbar
+   QUICK ACTIONS TOOLBAR - Action Buttons Below Header
    ============================================================================ */
 
 #ubs-quick-actions {
@@ -310,7 +515,7 @@ body {
   left: 0;
   right: 0;
   width: 100%;
-  z-index: 999998;
+  z-index: 9999;
 
   display: flex;
   gap: 8px;
@@ -322,6 +527,7 @@ body {
   box-sizing: border-box;
 }
 
+/* Regular Quick Action Buttons */
 #ubs-quick-actions button,
 .ubs-quick-action-btn {
   border-radius: 999px;
@@ -374,7 +580,7 @@ body {
 }
 
 /* ============================================================================
-   Layout Fix: Prevent body scroll, make input visible without scrolling
+   LAYOUT FIX - Prevent body scroll, make input visible without scrolling
    ============================================================================ */
 
 #root {
