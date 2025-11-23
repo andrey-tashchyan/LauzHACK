@@ -2,10 +2,127 @@
 (function() {
     'use strict';
 
+    // DEBUG: Confirm script is loading
+    console.log('*** UBS CUSTOM JS IS LOADING ***');
+
+    // Create header IMMEDIATELY (don't wait for load)
+    function createHeaderBarImmediate() {
+        console.log('createHeaderBarImmediate() called, readyState:', document.readyState);
+
+        if (document.getElementById('ubs-header-bar')) {
+            console.log('Header bar already exists, skipping creation');
+            return;
+        }
+
+        const headerBar = document.createElement('div');
+        headerBar.id = 'ubs-header-bar';
+        headerBar.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            height: 52px !important;
+            z-index: 999999 !important;
+            display: flex !important;
+            align-items: center !important;
+            padding: 0 22px !important;
+            background: #FFFFFF !important;
+            border-bottom: 1px solid #E0E0E0 !important;
+            box-sizing: border-box !important;
+        `;
+
+        const logo = document.createElement('img');
+        logo.src = '/public/logo_header.png';
+        logo.alt = 'Logo';
+        logo.className = 'ubs-header-logo';
+        logo.style.cssText = `
+            height: 42px !important;
+            width: auto !important;
+            display: block !important;
+        `;
+
+        headerBar.appendChild(logo);
+
+        if (document.body) {
+            document.body.insertBefore(headerBar, document.body.firstChild);
+            console.log('✅ Header bar created immediately! Element:', headerBar);
+
+            // Double check it's in the DOM
+            setTimeout(() => {
+                const check = document.getElementById('ubs-header-bar');
+                console.log('Header bar check after insert:', check ? 'FOUND' : 'NOT FOUND');
+                if (check) {
+                    console.log('Header bar computed style:', window.getComputedStyle(check).position, window.getComputedStyle(check).zIndex);
+                }
+            }, 100);
+        } else {
+            console.log('document.body not ready, waiting for DOMContentLoaded');
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.insertBefore(headerBar, document.body.firstChild);
+                console.log('✅ Header bar created on DOMContentLoaded!');
+            });
+        }
+    }
+
+    // Try to create header immediately
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createHeaderBarImmediate);
+    } else {
+        createHeaderBarImmediate();
+    }
+
     // Wait for page to load
     window.addEventListener('load', function() {
         console.log('UBS Enhanced custom JS loaded');
-        
+
+        // NEW: Create simple white header bar with logo
+        function createHeaderBar() {
+            // Check if header already exists to prevent duplicates
+            if (document.getElementById('ubs-header-bar')) {
+                return;
+            }
+
+            // Create header bar
+            const headerBar = document.createElement('div');
+            headerBar.id = 'ubs-header-bar';
+
+            // Add inline styles to ensure they apply
+            headerBar.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                height: 52px !important;
+                z-index: 999999 !important;
+                display: flex !important;
+                align-items: center !important;
+                padding: 0 22px !important;
+                background: #FFFFFF !important;
+                border-bottom: 1px solid #E0E0E0 !important;
+                box-sizing: border-box !important;
+            `;
+
+            // Create logo image
+            const logo = document.createElement('img');
+            logo.src = '/public/logo_header.png';
+            logo.alt = 'Logo';
+            logo.className = 'ubs-header-logo';
+            logo.style.cssText = `
+                height: 42px !important;
+                width: auto !important;
+                display: block !important;
+            `;
+
+            headerBar.appendChild(logo);
+
+            // Prepend to body (so it's the first element)
+            document.body.insertBefore(headerBar, document.body.firstChild);
+
+            console.log('Header bar created!');
+        }
+
         // UBS Logo Management
         function manageUBSLogo() {
             // Force UBS logo in header
@@ -264,6 +381,7 @@
 
         // Initialize everything
         function initializeUBSTheme() {
+            createHeaderBar();  // NEW: Create the simple white header bar
             manageUBSLogo();
             forceSendIconRed();
             addProfessionalAnimations();
@@ -329,4 +447,165 @@
             }, 500);
         });
     }
+})();
+
+// Quick Actions Toolbar
+(function() {
+    'use strict';
+
+    function createQuickActionsToolbar() {
+        // Check if toolbar already exists to prevent duplicates
+        if (document.getElementById('ubs-quick-actions')) {
+            console.log('Quick actions toolbar already exists, skipping creation');
+            return;
+        }
+
+        // Find the existing header
+        const topHeader = document.getElementById('ubs-top-header') || document.getElementById('ubs-header-bar');
+        if (!topHeader) {
+            console.log('Top header not found, cannot insert quick actions toolbar');
+            return;
+        }
+
+        // Create toolbar container
+        const toolbar = document.createElement('div');
+        toolbar.id = 'ubs-quick-actions';
+
+        // Define quick action buttons
+        const actions = [
+            {
+                label: 'Analyze a transaction',
+                prompt: 'Please analyze this transaction for potential AML risks. Explain which red flags might apply and why.'
+            },
+            {
+                label: 'Explain a red-flag',
+                prompt: 'Explain in simple terms why this transaction might trigger an AML red flag and which regulatory concerns it relates to.'
+            },
+            {
+                label: 'Risk summary',
+                prompt: 'Give me a high-level AML risk summary for this client based on the following information.'
+            }
+        ];
+
+        // Create buttons
+        actions.forEach(action => {
+            const button = document.createElement('button');
+            button.textContent = action.label;
+            button.className = 'ubs-quick-action-btn';
+
+            button.addEventListener('click', function() {
+                // Find the chat input textarea
+                const textarea = document.querySelector('textarea[placeholder*="Type"], textarea');
+                if (!textarea) {
+                    console.error('Chat textarea not found');
+                    return;
+                }
+
+                // Set the value
+                textarea.value = action.prompt;
+
+                // Trigger input event so Chainlit detects the change
+                const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(inputEvent);
+
+                // Also trigger change event for good measure
+                const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(changeEvent);
+
+                // Find and click the send button
+                let sendBtn = document.querySelector('button[aria-label="Send"]');
+                if (!sendBtn) {
+                    sendBtn = document.querySelector('button[type="submit"]');
+                }
+                if (!sendBtn) {
+                    // Fallback: look for button near the textarea
+                    const form = textarea.closest('form');
+                    if (form) {
+                        sendBtn = form.querySelector('button');
+                    }
+                }
+
+                if (sendBtn) {
+                    // Small delay to ensure the input value is registered
+                    setTimeout(() => {
+                        sendBtn.click();
+                        console.log('Quick action sent:', action.label);
+                    }, 50);
+                } else {
+                    console.error('Send button not found');
+                }
+            });
+
+            toolbar.appendChild(button);
+        });
+
+        // Add Full Dataset AML Scan button (fourth button, more prominent)
+        if (!document.getElementById('ubs-full-dataset-btn')) {
+            const fullScanBtn = document.createElement('button');
+            fullScanBtn.id = 'ubs-full-dataset-btn';
+            fullScanBtn.className = 'ubs-full-scan-btn';
+            fullScanBtn.textContent = 'Full dataset AML scan';
+
+            fullScanBtn.addEventListener('click', function() {
+                // Find the chat input textarea
+                const textarea = document.querySelector('textarea[placeholder*="Type"], textarea');
+                if (!textarea) {
+                    console.error('Chat textarea not found');
+                    return;
+                }
+
+                // Set the full scan prompt
+                textarea.value = 'Run a full AML risk scan on the entire client dataset. Identify the highest-risk clients, the main patterns of suspicious behavior, and summarize key red flags by segment (jurisdiction, product type, channel, and transaction pattern).';
+
+                // Trigger input event so Chainlit detects the change
+                const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(inputEvent);
+
+                // Also trigger change event for good measure
+                const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(changeEvent);
+
+                // Find and click the send button
+                let sendBtn = document.querySelector('button[aria-label="Send"]');
+                if (!sendBtn) {
+                    sendBtn = document.querySelector('button[type="submit"]');
+                }
+                if (!sendBtn) {
+                    // Fallback: look for button near the textarea
+                    const form = textarea.closest('form');
+                    if (form) {
+                        sendBtn = form.querySelector('button');
+                    }
+                }
+
+                if (sendBtn) {
+                    // Small delay to ensure the input value is registered
+                    setTimeout(() => {
+                        sendBtn.click();
+                        console.log('Full dataset AML scan initiated');
+                    }, 50);
+                } else {
+                    console.error('Send button not found');
+                }
+            });
+
+            toolbar.appendChild(fullScanBtn);
+        }
+
+        // Insert toolbar right after the top header
+        topHeader.parentNode.insertBefore(toolbar, topHeader.nextSibling);
+        console.log('✅ Quick actions toolbar created!');
+    }
+
+    // Wait for page to load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createQuickActionsToolbar);
+    } else {
+        createQuickActionsToolbar();
+    }
+
+    // Also try on window load
+    window.addEventListener('load', function() {
+        setTimeout(createQuickActionsToolbar, 100);
+    });
 })();
