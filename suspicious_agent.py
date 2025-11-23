@@ -1,4 +1,4 @@
-```
+
 """
 LangChain + Neo4j Integration for Banking Transactions
 Uses GraphCypherQAChain for natural language to Cypher translation
@@ -148,4 +148,3 @@ Generate a Cypher query to answer the question. Only return the Cypher query, no
     def get_schema(self):
         """Get the current graph schema"""
         return self.graph.schema
-```

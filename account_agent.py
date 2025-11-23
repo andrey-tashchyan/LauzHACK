@@ -4,7 +4,7 @@ Account information agent powered by Together.ai (GPT-OSS-120B).
 Given a free-form question, the agent:
 - Resolves a partner by name or ID (or via account ID).
 - Surfaces core KYC attributes (gender, name, birth year, onboarding note, address).
-- Checks the internal watchlist and suspicious industry list.
+- Checks the top suspects list and suspicious industry list.
 - Summarises country of residence and outbound payment countries.
 - Runs AML feature analytics (features/run_all_features.py) and lets the LLM pick
   the most relevant metrics for the question.
@@ -71,6 +71,7 @@ from features.run_all_features import run_all_features
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data_lauzhack_2"
+SUSPECTS_CSV = DATA_DIR / "top_100_suspects_20251123_101101.csv"
 
 # Fallback suspicious industry list (kept in sync with add_suspicious_industries.py)
 FALLBACK_SUSPICIOUS_INDUSTRIES = [
@@ -142,8 +143,29 @@ def load_onboarding_notes() -> pd.DataFrame:
     return pd.read_csv(DATA_DIR / "client_onboarding_notes.csv")
 
 
-def load_watchlist() -> pd.DataFrame:
-    return pd.read_csv(DATA_DIR / "intern_watchlist.csv")
+def load_watchlist(partner_class: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load the top suspects list and optionally filter by partner_class_code.
+    Used to keep people/company watchlists separated.
+    """
+    watch = pd.read_csv(SUSPECTS_CSV).copy()
+    watch.insert(0, "watch_rank", range(1, len(watch) + 1))
+    watch["watch_reason"] = watch.apply(
+        lambda row: (
+            f"Overall risk {row.get('overall_risk_level')} (score {row.get('aggregate_risk_score')}); "
+            f"high={row.get('high_risk_features')}, medium={row.get('medium_risk_features')}, "
+            f"low={row.get('low_risk_features')}; total_transactions={row.get('total_transactions')}"
+        ),
+        axis=1,
+    )
+    if partner_class:
+        partner = pd.read_csv(DATA_DIR / "partner.csv")[["partner_id", "partner_class_code"]]
+        watch = (
+            watch.merge(partner, on="partner_id", how="left")
+            .query("partner_class_code == @partner_class")
+            .drop(columns=["partner_class_code"])
+        )
+    return watch
 
 
 def load_relationships() -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -168,6 +190,7 @@ def load_feature_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
         ROOT / "joined_with_transcation.csv",
         DATA_DIR / "joined_with_transactions.csv",
         DATA_DIR / "joined_with_transcation.csv",
+        DATA_DIR / "transactions.csv",
     ]
 
     tx_path: Optional[Path] = None
@@ -179,21 +202,88 @@ def load_feature_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
         raise FileNotFoundError("No joined_with_transactions.csv found for feature analysis.")
 
     tx_df = pd.read_csv(tx_path)
-    tx_df["Date"] = pd.to_datetime(tx_df["Date"], errors="coerce")
-    tx_df = tx_df.dropna(subset=["Date"]).copy()
+    # Normalize column names
+    rename_map = {
+        "counterparty_Account_ID": "counterparty_account_id",
+        "ext_counterparty_Account_ID": "ext_counterparty_account_id",
+        "ext_counterparty_country": "ext_counterparty_country",
+        "Account ID": "account_id",
+    }
+    tx_df = tx_df.rename(columns=rename_map)
+
+    if "Date" in tx_df.columns:
+        tx_df["Date"] = pd.to_datetime(tx_df["Date"], errors="coerce")
+        tx_df = tx_df.dropna(subset=["Date"]).copy()
     if "Amount" in tx_df.columns:
         tx_df["Amount"] = pd.to_numeric(tx_df["Amount"], errors="coerce").fillna(0.0)
-    if "account_id" not in tx_df.columns and "Account ID" in tx_df.columns:
-        tx_df["account_id"] = tx_df["Account ID"]
-    tx_df = tx_df.rename(
-        columns={
-            "counterparty_Account_ID": "counterparty_account_id",
-            "ext_counterparty_Account_ID": "ext_counterparty_account_id",
-        }
-    )
+    # Attach partner_id if missing by mapping account_id -> partner_id via BR mapping
+    if "partner_id" not in tx_df.columns:
+        try:
+            partner_role_df = pd.read_csv(DATA_DIR / "partner_role.csv")
+            br_to_account_df = pd.read_csv(DATA_DIR / "br_to_account.csv")
+            partner_br = partner_role_df[partner_role_df["entity_type"] == "BR"][["partner_id", "entity_id"]]
+            partner_br.columns = ["partner_id", "br_id"]
+            mapping = br_to_account_df.merge(partner_br, on="br_id", how="left")
+            acct_to_partner = {str(r.account_id): str(r.partner_id) for r in mapping.itertuples() if pd.notna(r.account_id) and pd.notna(r.partner_id)}
+            if "account_id" not in tx_df.columns and "Account ID" in tx_df.columns:
+                tx_df["account_id"] = tx_df["Account ID"]
+            tx_df["partner_id"] = tx_df["account_id"].astype(str).map(acct_to_partner)
+        except Exception:
+            pass
+
+    # Provide placeholder incoming/outgoing columns expected by newer feature functions
+    # If we don't have bilateral info, fall back to partner_id and ext country.
+    country_map = {}
+    try:
+        partner_country_df = pd.read_csv(DATA_DIR / "partner_country.csv")
+        domicile = partner_country_df[partner_country_df["country_type"].str.lower() == "domicile"]
+        country_map = {str(r.partner_id): r.country_name for r in domicile.itertuples() if pd.notna(r.partner_id)}
+        status_map = {str(r.partner_id): r.partner_country_status_code for r in domicile.itertuples() if pd.notna(r.partner_id)}
+    except Exception:
+        country_map = {}
+        status_map = {}
+
+    def _ensure_col(name: str, value):
+        if name not in tx_df.columns:
+            if isinstance(value, pd.DataFrame):
+                tx_df[name] = value.iloc[:, 0]
+            else:
+                tx_df[name] = value
+
+    _ensure_col("partner_id_outgoing", tx_df.get("partner_id"))
+    _ensure_col("partner_id_incoming", tx_df.get("partner_id"))
+    _ensure_col("country_name_outgoing", tx_df["partner_id"].map(country_map) if "partner_id" in tx_df.columns else None)
+    _ensure_col("country_name_incoming", tx_df["partner_id"].map(country_map) if "partner_id" in tx_df.columns else None)
+    _ensure_col("partner_country_status_code_outgoing", tx_df["partner_id"].map(status_map) if "partner_id" in tx_df.columns else None)
+    _ensure_col("partner_country_status_code_incoming", tx_df["partner_id"].map(status_map) if "partner_id" in tx_df.columns else None)
+    _ensure_col("industry_gic2_code_outgoing", tx_df.get("industry_gic2_code"))
+    _ensure_col("industry_gic2_code_incoming", tx_df.get("industry_gic2_code"))
+    _ensure_col("account_id_outgoing", tx_df.get("account_id"))
+    _ensure_col("account_id_incoming", tx_df.get("account_id"))
+    # Clean Debit/Credit casing
+    if "Debit/Credit" in tx_df.columns:
+        tx_df["Debit/Credit"] = tx_df["Debit/Credit"].astype(str).str.lower()
 
     account_df = pd.read_csv(DATA_DIR / "account.csv")
     account_df = _parse_dates(account_df, ["account_open_date", "account_close_date"])
+    # Map account metadata into transaction frame for feature functions expecting *_outgoing fields
+    if "account_id" in tx_df.columns:
+        open_map = {str(r.account_id): r.account_open_date for r in account_df.itertuples() if pd.notna(r.account_id)}
+        close_map = {str(r.account_id): r.account_close_date for r in account_df.itertuples() if pd.notna(r.account_id)}
+        currency_map = {str(r.account_id): r.account_currency for r in account_df.itertuples() if pd.notna(r.account_id)}
+        acct_series = tx_df["account_id"]
+        if isinstance(acct_series, pd.DataFrame):
+            acct_series = acct_series.iloc[:, 0]
+        acct_series = acct_series.astype(str)
+        tx_df["account_open_date"] = acct_series.map(open_map)
+        tx_df["account_close_date"] = acct_series.map(close_map)
+        tx_df["account_currency"] = acct_series.map(currency_map)
+        _ensure_col("account_open_date_outgoing", tx_df["account_open_date"])
+        _ensure_col("account_open_date_incoming", tx_df["account_open_date"])
+        _ensure_col("account_close_date_outgoing", tx_df["account_close_date"])
+        _ensure_col("account_close_date_incoming", tx_df["account_close_date"])
+        _ensure_col("account_currency_outgoing", tx_df["account_currency"])
+        _ensure_col("account_currency_incoming", tx_df["account_currency"])
     return tx_df, account_df
 
 
@@ -220,6 +310,29 @@ def pick_country_of_residence(partner_country_df: pd.DataFrame, partner_id: str)
     return subset.iloc[0]["country_name"]
 
 
+def country_breakdown(partner_country_df: pd.DataFrame, partner_id: str) -> Dict[str, List[str]]:
+    """
+    Return countries by type (domicile, tax, mailing) for a partner.
+    Only keeps active rows (status code 1) when available.
+    """
+    subset = partner_country_df[partner_country_df["partner_id"] == partner_id]
+    if subset.empty:
+        return {}
+    active = subset[subset["partner_country_status_code"] == 1]
+    if not active.empty:
+        subset = active
+    breakdown: Dict[str, List[str]] = {}
+    for _, row in subset.iterrows():
+        ctype = str(row.get("country_type")).lower()
+        cname = row.get("country_name")
+        if pd.isna(cname):
+            continue
+        breakdown.setdefault(ctype, [])
+        if cname not in breakdown[ctype]:
+            breakdown[ctype].append(cname)
+    return breakdown
+
+
 def format_business_rel(partner_role: pd.DataFrame, partner_id: str) -> List[Dict[str, str]]:
     records: List[Dict[str, str]] = []
     rows = partner_role[partner_role["partner_id"] == partner_id]
@@ -237,6 +350,46 @@ def format_business_rel(partner_role: pd.DataFrame, partner_id: str) -> List[Dic
     return records
 
 
+def associated_persons(partner_role: pd.DataFrame, partner_df: pd.DataFrame, partner_id: str) -> Dict[str, List[Dict[str, str]]]:
+    """
+    Capture associated persons (outgoing and incoming associations) using associated_partner_id.
+    """
+    result = {"linked_from_partner": [], "linked_to_partner": []}
+
+    # Links where the current partner points to others
+    rows_out = partner_role[(partner_role["partner_id"] == partner_id) & partner_role["associated_partner_id"].notna()]
+    for _, row in rows_out.iterrows():
+        assoc_id = row["associated_partner_id"]
+        name = partner_df[partner_df["partner_id"] == assoc_id]["partner_name"].iloc[0] if (partner_df["partner_id"] == assoc_id).any() else None
+        result["linked_from_partner"].append(
+            {
+                "associated_partner_id": assoc_id,
+                "associated_partner_name": name,
+                "br_type_code": row.get("br_type_code"),
+                "relationship_start_date": row.get("relationship_start_date"),
+                "relationship_end_date": row.get("relationship_end_date"),
+            }
+        )
+
+    # Links where others point to this partner
+    rows_in = partner_role[(partner_role["associated_partner_id"] == partner_id)]
+    for _, row in rows_in.iterrows():
+        origin_id = row["partner_id"]
+        name = partner_df[partner_df["partner_id"] == origin_id]["partner_name"].iloc[0] if (partner_df["partner_id"] == origin_id).any() else None
+        result["linked_to_partner"].append(
+            {
+                "partner_id": origin_id,
+                "partner_name": name,
+                "br_type_code": row.get("br_type_code"),
+                "relationship_start_date": row.get("relationship_start_date"),
+                "relationship_end_date": row.get("relationship_end_date"),
+            }
+        )
+
+    # Remove empty buckets
+    return {k: v for k, v in result.items() if v}
+
+
 def is_basic_question(question: str) -> bool:
     lowered = question.lower()
     keywords = ["info", "information", "who is", "tell me about", "basic", "give me", "details on"]
@@ -252,9 +405,10 @@ class PartnerResolution:
 
 
 class AccountAgent:
-    def __init__(self, model: str = "openai/gpt-oss-120b", temperature: float = 0.0) -> None:
+    def __init__(self, model: str = "openai/gpt-oss-120b", temperature: float = 0.0, verbose: bool = False) -> None:
         self.model_name = model
         self.temperature = temperature
+        self.verbose = verbose
         if Together is None:
             self.client = _MockClient()
             self.using_mock_llm = True
@@ -265,7 +419,7 @@ class AccountAgent:
         self.partner_df = load_partner_core()
         self.partner_country_df = load_partner_country()
         self.onboarding_df = load_onboarding_notes()
-        self.watchlist_df = load_watchlist()
+        self.watchlist_df = load_watchlist(partner_class="I")
         self.partner_role_df, self.business_rel_df = load_relationships()
         self.br_to_account_df, self.account_df = load_account_mapping()
         self.transactions_df, self.accounts_df = load_feature_data()
@@ -276,6 +430,7 @@ class AccountAgent:
             "You are an AML account information agent. Use ONLY the provided context. "
             "If watchlist_warning is present, surface it prominently. "
             "If basic_request is true, respond using this exact structure:\n"
+            "- Summary: <concise resume with the person's name + onboarding description>\n"
             "- Industry: <industry>; suspicious_industry: <yes/no>\n"
             "- Countries: residence=<country_of_residence>; outgoing={list of country:amount}\n"
             "- Business relationship: <key relationship facts>\n"
@@ -363,6 +518,32 @@ class AccountAgent:
             return None
         return note.iloc[0].get("Onboarding_Note")
 
+    def _build_resume(self, partner_id: str, partner_name: Optional[str], onboarding_note: Optional[str]) -> str:
+        """
+        Build a concise resume string combining name + onboarding note.
+        """
+        name = partner_name or self.partner_df[self.partner_df["partner_id"] == partner_id].iloc[0].get("partner_name")
+        note = onboarding_note or "Not available"
+        resume = f"{name}: {note}" if name else note
+        if len(resume) > 300:
+            resume = resume[:297].rstrip() + "..."
+        return resume
+
+    def _data_completeness(self, tx_df: pd.DataFrame) -> Dict:
+        required_cols = ["Date", "Amount", "ext_counterparty_country", "counterparty_account_id", "ext_counterparty_account_id", "Debit/Credit"]
+        present = [c for c in required_cols if c in tx_df.columns]
+        missing = [c for c in required_cols if c not in tx_df.columns]
+        score = round(len(present) / len(required_cols), 2)
+        return {"required_columns": required_cols, "present": present, "missing": missing, "completeness_score": score}
+
+    def _tx_stats(self, tx_df: pd.DataFrame) -> Dict:
+        if tx_df.empty or "Date" not in tx_df.columns:
+            return {"tx_count": 0}
+        start = tx_df["Date"].min()
+        end = tx_df["Date"].max()
+        tx_count = len(tx_df)
+        return {"tx_count": tx_count, "start_date": str(start.date()), "end_date": str(end.date())}
+
     def _outgoing_countries(self, account_ids: List[str]) -> List[Dict[str, float]]:
         aggregated: Dict[str, float] = {}
         for acc in account_ids:
@@ -399,6 +580,7 @@ class AccountAgent:
     def _basic_profile(self, partner_id: str) -> Dict:
         row = self.partner_df[self.partner_df["partner_id"] == partner_id].iloc[0].to_dict()
         industry = row.get("industry_gic2_code")
+        countries = country_breakdown(self.partner_country_df, partner_id)
         return {
             "partner_id": partner_id,
             "partner_name": row.get("partner_name"),
@@ -410,6 +592,9 @@ class AccountAgent:
             "close_date": str(row.get("partner_close_date")),
             "industry": industry,
             "suspicious_industry": self._is_suspicious_industry(industry),
+            "country_domicile": countries.get("domicile"),
+            "country_tax": countries.get("tax"),
+            "country_mailing": countries.get("mailing"),
         }
 
     def answer(self, question: str) -> str:
@@ -427,6 +612,8 @@ class AccountAgent:
 
         outgoing = self._outgoing_countries(resolution.account_ids or self.partner_to_accounts.get(partner_id, []))
         relationships = format_business_rel(self.partner_role_df, partner_id)
+        associations = associated_persons(self.partner_role_df, self.partner_df, partner_id)
+        resume = self._build_resume(partner_id, partner_name, onboarding_note)
 
         # Compute AML features with stdout muted to avoid clutter.
         with redirect_stdout(io.StringIO()):
@@ -438,24 +625,49 @@ class AccountAgent:
                 save_json=False,
             )
         compressed_features = self._compress_features(features_analysis)
+        summary_meta = features_analysis.get("summary") if features_analysis else {}
+        overall_risk_level = "LOW"
+        if summary_meta:
+            if summary_meta.get("high_risk_features", 0) > 0:
+                overall_risk_level = "HIGH"
+            elif summary_meta.get("medium_risk_features", 0) > 0:
+                overall_risk_level = "MEDIUM"
+        overall_risk_score = summary_meta.get("average_risk_score") if summary_meta else None
+
+        partner_txs = self.transactions_df[self.transactions_df["partner_id"] == partner_id]
+        tx_stats = self._tx_stats(partner_txs)
+        completeness = self._data_completeness(partner_txs)
 
         basic_flag = is_basic_question(question)
         watchlist_warning = ""
         if watchlist_info:
-            watchlist_warning = (
-                f"⚠️ Partner is on internal watchlist (rank {watchlist_info.get('watch_rank')}): "
-                f"{watchlist_info.get('watch_reason')}"
-            )
+            rank = watchlist_info.get("watch_rank")
+            risk_level = watchlist_info.get("overall_risk_level")
+            score = watchlist_info.get("aggregate_risk_score")
+            details = []
+            if rank:
+                details.append(f"rank {int(rank)}")
+            if risk_level:
+                details.append(f"risk={risk_level}")
+            if score is not None and not pd.isna(score):
+                details.append(f"score={score}")
+            suffix = f" ({', '.join(details)})" if details else ""
+            reason = watchlist_info.get("watch_reason") or "Flagged in top suspects list."
+            watchlist_warning = f"⚠️ Partner is on suspects list{suffix}: {reason}"
 
         user_content = (
             f"Question: {question}\n"
             f"Basic request: {basic_flag}\n"
+            f"Header: client={partner_name} ({partner_id}); overall_risk_level={overall_risk_level}; overall_risk_score={overall_risk_score}; tx_stats={tx_stats}\n"
             f"Partner profile: {json.dumps(profile, ensure_ascii=False, indent=2)}\n"
             f"Watchlist warning: {watchlist_warning or 'None'}\n"
             f"Outgoing countries: {json.dumps(outgoing, ensure_ascii=False, indent=2)}\n"
             f"Business relationships: {json.dumps(relationships, ensure_ascii=False, indent=2)}\n"
-            f"AML features: {json.dumps(compressed_features, ensure_ascii=False, indent=2)}\n"
+            f"Associated persons: {json.dumps(associations, ensure_ascii=False, indent=2)}\n"
+            f"AML features: {json.dumps(compressed_features if self.verbose else compressed_features.get('summary'), ensure_ascii=False, indent=2)}\n"
             f"Onboarding note: {onboarding_note or 'Not available'}\n"
+            f"Onboarding resume: {resume}\n"
+            f"Data completeness: {json.dumps(completeness, ensure_ascii=False, indent=2)}\n"
             "Provide the answer now."
         )
 
@@ -483,9 +695,10 @@ def main() -> None:
     parser.add_argument("question", help="Question to ask about an account/partner.")
     parser.add_argument("--model", default="openai/gpt-oss-120b", help="Together model name.")
     parser.add_argument("--temperature", type=float, default=0.0, help="LLM temperature.")
+    parser.add_argument("--verbose", action="store_true", help="Include full feature details in the prompt.")
     args = parser.parse_args()
 
-    agent = AccountAgent(model=args.model, temperature=args.temperature)
+    agent = AccountAgent(model=args.model, temperature=args.temperature, verbose=args.verbose)
     print(agent.answer(args.question))
 
 
