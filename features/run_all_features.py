@@ -5,17 +5,17 @@ This script runs all AML features on the dataset.
 """
 
 from aml_utils import load_data
-from functions.feature_frequency import feature_frequency
-from functions.feature_burst_structuring import feature_burst_structuring
-from functions.feature_atypical_amounts import feature_atypical_amounts
-from functions.feature_cross_border import feature_cross_border
-from functions.feature_counterparties import feature_counterparties
-from functions.feature_irregularity import feature_irregularity
-from functions.feature_night_activity import feature_night_activity
-from functions.feature_ephemeral_account import feature_ephemeral_account
-from functions.feature_account_age import feature_account_age
-from functions.feature_abnormal_activity import feature_abnormal_activity
-from functions.feature_account_multiplicity import feature_account_multiplicity
+from features.feature_frequency import feature_frequency
+from features.feature_burst_structuring import feature_burst_structuring
+from features.feature_atypical_amounts import feature_atypical_amounts
+from features.feature_cross_border import feature_cross_border
+from features.feature_counterparties import feature_counterparties
+from features.feature_irregularity import feature_irregularity
+from features.feature_night_activity import feature_night_activity
+from features.feature_ephemeral_account import feature_ephemeral_account
+from features.feature_account_age import feature_account_age
+from features.feature_abnormal_activity import feature_abnormal_activity
+from features.feature_account_multiplicity import feature_account_multiplicity
 
 
 def run_all_features(transactions_df, accounts_df, partner_id=None, partner_name=None, save_json=True):

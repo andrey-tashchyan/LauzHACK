@@ -315,6 +315,23 @@ class AccountAgent:
             return best_id
         return None
 
+    def _name_in_question(self, question: str) -> Optional[str]:
+        """
+        Try to pull an explicit partner name mention out of the user question.
+        Prefers the longest fully matched name.
+        """
+        q_tokens = set(_normalize(question).split())
+        best_id: Optional[str] = None
+        best_len = 0
+        for _, row in self.partner_df.iterrows():
+            name_tokens = [t for t in _normalize(row.get("partner_name", "")).split() if t]
+            if not name_tokens:
+                continue
+            if all(tok in q_tokens for tok in name_tokens) and len(name_tokens) > best_len:
+                best_id = row["partner_id"]
+                best_len = len(name_tokens)
+        return best_id
+
     def resolve_partner(self, question: str) -> PartnerResolution:
         uuid_candidates = re.findall(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", question)
         for candidate in uuid_candidates:
@@ -323,6 +340,10 @@ class AccountAgent:
             if candidate in self.account_to_partner:
                 pid = self.account_to_partner[candidate]
                 return PartnerResolution(pid, [candidate], None, "account_id matched to partner")
+
+        direct_name = self._name_in_question(question)
+        if direct_name:
+            return PartnerResolution(direct_name, self.partner_to_accounts.get(direct_name, []), None, "name in question")
 
         name_match = self._best_name_match(question)
         if name_match:
