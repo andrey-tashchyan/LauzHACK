@@ -76,11 +76,15 @@ class AgentRouter:
         """
         try:
             route_result: RouteQuery = self.route_chain.invoke({"question": question})
+            print(f"DEBUG: route_result = {route_result}")  # Debug logging
         except Exception as exc:  # pragma: no cover - defensive guard
             return f"[routing_error] Failed to classify request: {exc}"
 
-        destination = route_result["destination"]
-        task = route_result.get("task", "")
+        if route_result is None:
+            return "[routing_error] The routing model returned None. Please try again."
+
+        destination = route_result.destination
+        task = route_result.task
 
         if destination == "suspicious_activity":
             body = self._run_script("suspicious_agent.py", question)
