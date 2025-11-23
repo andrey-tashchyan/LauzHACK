@@ -614,16 +614,40 @@ class AccountAgent:
         tx_count = len(tx_df)
         return {"tx_count": tx_count, "start_date": str(start.date()), "end_date": str(end.date())}
 
-    def _outgoing_countries(self, account_ids: List[str]) -> List[Dict[str, float]]:
+    def _extract_window_days(self, question: str) -> Optional[int]:
+        """
+        Detect a window like 'last 30 days' or '30-day window' in the question.
+        """
+        lowered = question.lower()
+        patterns = [
+            r"last (\d+)\s*days?",
+            r"past (\d+)\s*days?",
+            r"(\d+)\s*day window",
+            r"window of (\d+)\s*days?",
+            r"over (\d+)\s*days?",
+        ]
+        for pat in patterns:
+            match = re.search(pat, lowered)
+            if match:
+                days = int(match.group(1))
+                if days > 0:
+                    return days
+        return None
+
+    def _outgoing_countries(self, account_ids: List[str], window_days: Optional[int] = None) -> Tuple[List[Dict[str, float]], Optional[pd.Timestamp], Optional[pd.Timestamp]]:
         aggregated: Dict[str, float] = {}
+        window_start: Optional[pd.Timestamp] = None
+        window_end: Optional[pd.Timestamp] = None
         for acc in account_ids:
-            grouped, _, _ = amount_sent_per_country(self.tx_for_countries, account_id=acc, window_days=None)
+            grouped, start, end = amount_sent_per_country(self.tx_for_countries, account_id=acc, window_days=window_days)
+            window_start = window_start or start
+            window_end = window_end or end
             for _, row in grouped.iterrows():
                 country = row["country_clean"]
                 aggregated[country] = aggregated.get(country, 0.0) + float(row["total_sent"])
         pairs = [{"country": c, "total_sent": v} for c, v in aggregated.items()]
         pairs.sort(key=lambda x: x["total_sent"], reverse=True)
-        return pairs
+        return pairs, window_start, window_end
 
     def _is_suspicious_industry(self, industry: str) -> bool:
         return industry in self.suspicious_industries
@@ -749,7 +773,8 @@ class AccountAgent:
         country_of_res = pick_country_of_residence(self.partner_country_df, partner_id)
         profile["country_of_residence"] = country_of_res
 
-        outgoing = self._outgoing_countries(account_ids or self.partner_to_accounts.get(partner_id, []))
+        window_days = self._extract_window_days(question)
+        outgoing, window_start, window_end = self._outgoing_countries(account_ids or self.partner_to_accounts.get(partner_id, []), window_days=window_days)
         relationships = format_business_rel(self.partner_role_df, partner_id)
         associations = associated_persons(self.partner_role_df, self.partner_df, partner_id)
         resume = self._build_resume(partner_id, partner_name, onboarding_note)
@@ -817,7 +842,7 @@ class AccountAgent:
             f"Header: client={partner_name} ({partner_id}); overall_risk_level={overall_risk_level}; overall_risk_score={overall_risk_score}; tx_stats={tx_stats}\n"
             f"Partner profile: {json.dumps(profile, ensure_ascii=False, indent=2)}\n"
             f"Watchlist warning: {watchlist_warning or 'None'}\n"
-            f"Outgoing countries: {json.dumps(outgoing, ensure_ascii=False, indent=2)}\n"
+            f"Outgoing countries (window {window_start.date() if window_start is not None else '-inf'} -> {window_end.date() if window_end is not None else '+inf'}): {json.dumps(outgoing, ensure_ascii=False, indent=2)}\n"
             f"Business relationships: {json.dumps(relationships, ensure_ascii=False, indent=2)}\n"
             f"Associated persons: {json.dumps(associations, ensure_ascii=False, indent=2)}\n"
             f"AML features: {json.dumps(compressed_features if self.verbose else compressed_features.get('summary'), ensure_ascii=False, indent=2)}\n"
@@ -896,7 +921,8 @@ class AccountAgent:
         country_of_res = pick_country_of_residence(self.partner_country_df, partner_id)
         profile["country_of_residence"] = country_of_res
 
-        outgoing = self._outgoing_countries(account_ids or self.partner_to_accounts.get(partner_id, []))
+        window_days = self._extract_window_days(question)
+        outgoing, window_start, window_end = self._outgoing_countries(account_ids or self.partner_to_accounts.get(partner_id, []), window_days=window_days)
         relationships = format_business_rel(self.partner_role_df, partner_id)
 
         # Compute AML features with stdout muted
@@ -947,7 +973,7 @@ class AccountAgent:
             f"Basic request: {basic_flag}\n"
             f"Partner profile: {json.dumps(profile, ensure_ascii=False, indent=2)}\n"
             f"Watchlist warning: {watchlist_warning or 'None'}\n"
-            f"Outgoing countries: {json.dumps(outgoing, ensure_ascii=False, indent=2)}\n"
+            f"Outgoing countries (window {window_start.date() if window_start is not None else '-inf'} -> {window_end.date() if window_end is not None else '+inf'}): {json.dumps(outgoing, ensure_ascii=False, indent=2)}\n"
             f"Business relationships: {json.dumps(relationships, ensure_ascii=False, indent=2)}\n"
             f"AML features: {json.dumps(compressed_features, ensure_ascii=False, indent=2)}\n"
             f"Onboarding note: {onboarding_note or 'Not available'}\n"
