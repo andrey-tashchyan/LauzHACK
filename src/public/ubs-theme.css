@@ -464,29 +464,23 @@ body, p, span, div, .cl-text {
   --text-secondary: var(--ubs-grey-dark) !important;
 }
 
-/* Hide scroll-to-bottom button/arrow - comprehensive */
-button[aria-label*="scroll" i],
-button[aria-label*="bottom" i],
-button[title*="scroll" i],
-button[title*="bottom" i],
-.MuiFab-root,
-.MuiFab-primary,
-.MuiFab-secondary,
-.cl-fab,
-[class*="fab" i],
-[class*="Fab"],
-button[class*="scroll" i],
+/* Hide scroll-to-bottom button/arrow - only the floating scroll button, NOT send button */
+button[aria-label*="scroll" i]:not([type="submit"]):not([aria-label*="send" i]),
+button[aria-label*="bottom" i]:not([type="submit"]):not([aria-label*="send" i]),
+button[title*="scroll" i]:not([type="submit"]),
+button[title*="bottom" i]:not([type="submit"]),
+.MuiFab-root:not([type="submit"]),
+.MuiFab-primary:not([type="submit"]),
+.MuiFab-secondary:not([type="submit"]),
+.cl-fab:not([type="submit"]),
 button[class*="ScrollToBottom" i],
 button[class*="scrollTo" i],
 div[class*="scrollButton" i],
 div[class*="ScrollButton" i],
-[role="button"][class*="scroll" i],
-.chakra-ui-fab,
-button > svg[data-testid*="Arrow" i],
-button > svg[class*="arrow" i],
-/* Hide the specific rounded-full button that appears when scrolling */
-button.rounded-full.h-9.w-9,
-button.inline-flex.rounded-full {
+.chakra-ui-fab:not([type="submit"]),
+/* Hide the specific rounded-full button that appears when scrolling - but NOT in input container */
+button.rounded-full.h-9.w-9:not(.cl-input-container button):not(form button),
+button.inline-flex.rounded-full.h-9.w-9 {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
