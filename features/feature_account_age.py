@@ -79,7 +79,7 @@ def feature_account_age(accounts_df, partner_id=None):
 
 
 if __name__ == '__main__':
-    from aml_utils import load_data
+    from features.aml_utils import load_data
 
     # Load data
     transactions_df, accounts_df = load_data()

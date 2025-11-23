@@ -1,9 +1,103 @@
 """
 AML Feature: Transaction Frequency Analysis
+Adapted for new transaction schema with incoming/outgoing structure.
 """
 
 import pandas as pd
+import numpy as np
 from datetime import datetime
+
+
+def _prepare_transactions(transactions_df, partner_id=None):
+    """
+    Prepare and normalize transaction data for the new schema.
+
+    This helper function:
+    - Drops unnamed columns
+    - Converts 'Date' to datetime
+    - Derives logical partner_id, counterparty_id, and country fields
+    - Handles the dual incoming/outgoing structure
+
+    Strategy:
+    - For 'debit' transactions: the outgoing side is the logical partner
+    - For 'credit' transactions: the incoming side is the logical partner
+    - The opposite side becomes the counterparty
+
+    Parameters:
+    -----------
+    transactions_df : pd.DataFrame
+        Raw transaction data with new schema
+    partner_id : str, optional
+        Partner ID to filter on
+
+    Returns:
+    --------
+    pd.DataFrame : Cleaned and normalized transaction data
+    """
+    df = transactions_df.copy()
+
+    # Drop unnamed columns
+    df = df.drop(columns=[col for col in df.columns if 'Unnamed' in str(col)], errors='ignore')
+
+    # Convert Date to datetime
+    if 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+    # Derive logical columns based on Debit/Credit direction
+    # For debit: we send money, so outgoing = us (partner), incoming = counterparty
+    # For credit: we receive money, so incoming = us (partner), outgoing = counterparty
+
+    df['logical_partner_id'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['partner_id_outgoing'],
+        df['partner_id_incoming']
+    )
+
+    df['logical_partner_country'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['country_name_outgoing'],
+        df['country_name_incoming']
+    )
+
+    df['logical_partner_sector'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['industry_gic2_code_outgoing'],
+        df['industry_gic2_code_incoming']
+    )
+
+    df['counterparty_id'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['partner_id_incoming'],
+        df['partner_id_outgoing']
+    )
+
+    df['counterparty_country'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['country_name_incoming'],
+        df['country_name_outgoing']
+    )
+
+    df['counterparty_sector'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['industry_gic2_code_incoming'],
+        df['industry_gic2_code_outgoing']
+    )
+
+    df['counterparty_account_id'] = np.where(
+        df['Debit/Credit'] == 'debit',
+        df['account_id_incoming'],
+        df['account_id_outgoing']
+    )
+
+    # Also handle external counterparty fields
+    if 'ext_counterparty_country' in df.columns:
+        df['counterparty_country'] = df['counterparty_country'].fillna(df['ext_counterparty_country'])
+
+    # Filter by partner_id if specified
+    if partner_id:
+        df = df[df['logical_partner_id'] == partner_id]
+
+    return df
 
 
 def feature_frequency(transactions_df, partner_id=None, return_data=True):
@@ -13,25 +107,51 @@ def feature_frequency(transactions_df, partner_id=None, return_data=True):
     Computes the number of transactions per day/week and identifies
     patterns that may indicate suspicious activity.
 
+    This version is adapted for the new transaction schema with incoming/outgoing structure.
+
     Parameters:
     -----------
     transactions_df : pd.DataFrame
-        Transaction data
+        Transaction data with new schema (includes Debit/Credit, incoming/outgoing fields)
     partner_id : str, optional
         Specific partner to analyze. If None, analyzes all transactions.
-    """
-    df = transactions_df.copy()
+    return_data : bool, optional
+        If True, returns dictionary with computed metrics. Default: True.
 
-    # Filter by partner if specified
+    Returns:
+    --------
+    dict or None : If return_data=True, returns metrics dictionary
+    """
+    # Prepare and normalize data
+    df = _prepare_transactions(transactions_df, partner_id)
+
+    # Set label for output
     if partner_id:
-        df = df[df['partner_id'] == partner_id]
         label = f"Partner {partner_id}"
     else:
         label = "All partners"
 
     if len(df) == 0:
         print(f"Feature: Frequency – {label} – No transactions found")
-        return None if return_data else None
+        if return_data:
+            return {
+                "feature_name": "frequency",
+                "partner_id": partner_id if partner_id else "global",
+                "partner_name": None,
+                "metrics": {
+                    "total_transactions": 0,
+                    "date_range_days": 0,
+                    "tx_per_day_avg": 0,
+                    "max_daily": 0,
+                    "avg_daily": 0,
+                    "std_daily": 0
+                },
+                "risk_level": "LOW",
+                "risk_score": 0,
+                "risk_reasons": ["No transactions found"],
+                "timestamp": datetime.now().isoformat()
+            }
+        return None
 
     # Calculate metrics
     total_tx = len(df)
@@ -80,7 +200,9 @@ def feature_frequency(transactions_df, partner_id=None, return_data=True):
     print(f"  Period: {date_range} days")
     print(f"  Average: {tx_per_day:.2f} tx/day")
     print(f"  Max daily: {max_daily} tx")
-    print(f"  Risk: {risk}")
+    print(f"  Risk: {risk} (score: {risk_score}/100)")
+    if risk_reasons:
+        print(f"  Reasons: {'; '.join(risk_reasons)}")
     print()
 
     # Return structured data
@@ -109,16 +231,24 @@ def feature_frequency(transactions_df, partner_id=None, return_data=True):
 
 
 if __name__ == '__main__':
-    from aml_utils import load_data
+    # Test with sample data
+    sample_file = '/Users/tashchyan/Desktop/LauzHACK/features/sample_data_100 (1).csv'
 
-    # Load data
-    transactions_df, accounts_df = load_data()
+    print("Loading sample data...")
+    transactions_df = pd.read_csv(sample_file)
 
     # Test global analysis
     print("=== Global Analysis ===")
-    feature_frequency(transactions_df)
+    result = feature_frequency(transactions_df, return_data=True)
 
     # Test individual partner analysis
-    sample_partner = transactions_df['partner_id'].value_counts().index[0]
-    print(f"\n=== Individual Analysis: {sample_partner} ===")
-    feature_frequency(transactions_df, partner_id=sample_partner)
+    if 'partner_id_incoming' in transactions_df.columns:
+        sample_partners = pd.concat([
+            transactions_df['partner_id_incoming'].dropna(),
+            transactions_df['partner_id_outgoing'].dropna()
+        ]).value_counts()
+
+        if len(sample_partners) > 0:
+            sample_partner = sample_partners.index[0]
+            print(f"\n=== Individual Analysis: {sample_partner} ===")
+            result = feature_frequency(transactions_df, partner_id=sample_partner, return_data=True)
