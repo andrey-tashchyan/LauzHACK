@@ -94,7 +94,7 @@ def run_all_features(transactions_df, accounts_df, partner_id=None, partner_name
         results.append(result)
 
     # Account features
-    result = feature_ephemeral_account(transactions_df, accounts_df, partner_id)
+    result = feature_ephemeral_account(transactions_df, partner_id)
     if result:
         result['partner_name'] = partner_name
         results.append(result)
