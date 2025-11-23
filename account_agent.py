@@ -29,7 +29,7 @@ from contextlib import redirect_stdout
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Iterator, Any
 
 import pandas as pd
 
@@ -597,20 +597,47 @@ class AccountAgent:
             "country_mailing": countries.get("mailing"),
         }
 
-    def answer(self, question: str) -> str:
-        resolution = self.resolve_partner(question)
-        if not resolution.partner_id:
-            return "Could not identify the partner/account from the question."
+    def answer(
+        self,
+        question: str,
+        session: Optional[Any] = None
+    ) -> str:
+        """
+        Answer a question about an account/partner.
 
-        partner_id = resolution.partner_id
+        Args:
+            question: User's question
+            session: Optional conversation session for context
+        """
+        # Check if this is a follow-up question using cached partner
+        partner_id = None
+        if session:
+            cached_partner = session.get_context("last_partner_id")
+            if cached_partner and self._is_followup(question):
+                partner_id = cached_partner
+                question = f"{question} (referring to partner {cached_partner})"
+
+        if not partner_id:
+            resolution = self.resolve_partner(question)
+            if not resolution.partner_id:
+                return "Could not identify the partner/account from the question."
+            partner_id = resolution.partner_id
+
+        # Store partner for follow-ups
+        if session:
+            session.set_context("last_partner_id", partner_id)
+
         partner_name = self.partner_df[self.partner_df["partner_id"] == partner_id].iloc[0].get("partner_name")
+        if session:
+            session.set_context("last_partner_name", partner_name)
+
         profile = self._basic_profile(partner_id)
         watchlist_info = self._watchlist_entry(partner_id)
         onboarding_note = self._onboarding_note(partner_id)
         country_of_res = pick_country_of_residence(self.partner_country_df, partner_id)
         profile["country_of_residence"] = country_of_res
 
-        outgoing = self._outgoing_countries(resolution.account_ids or self.partner_to_accounts.get(partner_id, []))
+        outgoing = self._outgoing_countries(self.partner_to_accounts.get(partner_id, []))
         relationships = format_business_rel(self.partner_role_df, partner_id)
         associations = associated_persons(self.partner_role_df, self.partner_df, partner_id)
         resume = self._build_resume(partner_id, partner_name, onboarding_note)
@@ -688,6 +715,122 @@ class AccountAgent:
         if getattr(self, "using_mock_llm", False):
             preface += "[using mock Together client for offline test]\n"
         return preface + content
+
+    def answer_stream(
+        self,
+        question: str,
+        session: Optional[Any] = None
+    ) -> Iterator[str]:
+        """
+        Stream answer about an account/partner.
+
+        Args:
+            question: User's question
+            session: Optional conversation session for context
+
+        Yields:
+            Response chunks as they arrive
+        """
+        # Check if this is a follow-up question using cached partner
+        partner_id = None
+        if session:
+            cached_partner = session.get_context("last_partner_id")
+            if cached_partner and self._is_followup(question):
+                partner_id = cached_partner
+                question = f"{question} (referring to partner {cached_partner})"
+
+        if not partner_id:
+            resolution = self.resolve_partner(question)
+            if not resolution.partner_id:
+                yield "Could not identify the partner/account from the question."
+                return
+            partner_id = resolution.partner_id
+
+        # Store partner for follow-ups
+        if session:
+            session.set_context("last_partner_id", partner_id)
+
+        partner_name = self.partner_df[self.partner_df["partner_id"] == partner_id].iloc[0].get("partner_name")
+        if session:
+            session.set_context("last_partner_name", partner_name)
+
+        profile = self._basic_profile(partner_id)
+        watchlist_info = self._watchlist_entry(partner_id)
+        onboarding_note = self._onboarding_note(partner_id)
+        country_of_res = pick_country_of_residence(self.partner_country_df, partner_id)
+        profile["country_of_residence"] = country_of_res
+
+        outgoing = self._outgoing_countries(self.partner_to_accounts.get(partner_id, []))
+        relationships = format_business_rel(self.partner_role_df, partner_id)
+
+        # Compute AML features with stdout muted
+        with redirect_stdout(io.StringIO()):
+            features_analysis = run_all_features(
+                self.transactions_df,
+                self.accounts_df,
+                partner_id=partner_id,
+                partner_name=partner_name,
+                save_json=False,
+            )
+        compressed_features = self._compress_features(features_analysis)
+
+        basic_flag = is_basic_question(question)
+        watchlist_warning = ""
+        if watchlist_info:
+            watchlist_warning = (
+                f"⚠️ Partner is on internal watchlist (rank {watchlist_info.get('watch_rank')}): "
+                f"{watchlist_info.get('watch_reason')}"
+            )
+            yield watchlist_warning + "\n"
+
+        user_content = (
+            f"Question: {question}\n"
+            f"Basic request: {basic_flag}\n"
+            f"Partner profile: {json.dumps(profile, ensure_ascii=False, indent=2)}\n"
+            f"Watchlist warning: {watchlist_warning or 'None'}\n"
+            f"Outgoing countries: {json.dumps(outgoing, ensure_ascii=False, indent=2)}\n"
+            f"Business relationships: {json.dumps(relationships, ensure_ascii=False, indent=2)}\n"
+            f"AML features: {json.dumps(compressed_features, ensure_ascii=False, indent=2)}\n"
+            f"Onboarding note: {onboarding_note or 'Not available'}\n"
+            "Provide the answer now."
+        )
+
+        try:
+            # Stream response from Together API
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                temperature=self.temperature,
+                messages=[
+                    {"role": "system", "content": self.system_prompt},
+                    {"role": "user", "content": user_content},
+                ],
+                stream=True,
+            )
+
+            for chunk in response:
+                if hasattr(chunk, 'choices') and chunk.choices:
+                    delta = chunk.choices[0].delta
+                    if hasattr(delta, 'content') and delta.content:
+                        yield delta.content
+        except Exception as exc:
+            yield f"[llm_error] {exc}"
+
+    def _is_followup(self, question: str) -> bool:
+        """Check if this is a follow-up question."""
+        q_lower = question.lower()
+        followup_indicators = [
+            "what about",
+            "tell me more",
+            "show me",
+            "more info",
+            "what else",
+            "also",
+            "their",
+            "them",
+            "it",
+            "the same",
+        ]
+        return any(ind in q_lower for ind in followup_indicators) and len(question.split()) < 15
 
 
 def main() -> None:

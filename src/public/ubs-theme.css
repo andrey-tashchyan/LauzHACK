@@ -211,11 +211,25 @@ img[src*="ubs_logo"] {
   color: var(--ubs-white) !important;
 }
 
+#ubs-top-input-wrapper {
+  position: sticky;
+  top: 60px; /* just below the custom header */
+  z-index: 1000;
+  background: var(--ubs-white);
+  padding: 8px 12px;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.cl-message-list,
+div[class*="message-list"] {
+  padding-top: 90px; /* keep messages clear of the fixed input bar */
+}
+
 /* Input area - Clean, professional */
 .cl-input-container {
-  background: var(--ubs-white) !important;
+  background: #F5F5F5 !important;
   border-top: 1px solid #E0E0E0 !important;
-  padding: 16px 24px !important;
+  padding: 4px 10px !important;
   box-shadow: var(--shadow-light) !important;
 }
 
@@ -449,6 +463,28 @@ body, p, span, div, .cl-text {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  #root {
+    padding-top: 116px;
+  }
+
+  .cl-input-root,
+  .cl-input-container,
+  div[class*="input-root"],
+  div[class*="InputRoot"],
+  div[class*="input-container"],
+  div[class*="InputContainer"] {
+    width: calc(100% - 24px) !important;
+    bottom: 12px !important;
+    padding: 12px 16px !important;
+  }
+
+  .cl-message-list,
+  div[class*="message-list"],
+  div[class*="MessageList"],
+  div[class*="messages"] {
+    padding-bottom: 100px;
+  }
+
   .cl-header {
     padding: 12px 16px !important;
   }
@@ -456,10 +492,6 @@ body, p, span, div, .cl-text {
   .cl-message {
     margin: 8px 12px !important;
     padding: 12px !important;
-  }
-
-  .cl-input-container {
-    padding: 12px 16px !important;
   }
 
   .cl-header h1,
@@ -485,15 +517,15 @@ body, p, span, div, .cl-text {
 
 #ubs-header-bar {
   position: fixed;
-  top: 0;
+  top: 2px;
   left: 0;
   right: 0;
-  height: 52px;
+  height: 56px;
   z-index: 10000;
 
   display: flex;
   align-items: center;
-  padding: 0 22px;
+  padding: 4px 16px 0 16px;
 
   background: #FFFFFF;
   border-bottom: 1px solid #E0E0E0;
@@ -506,37 +538,126 @@ body, p, span, div, .cl-text {
 }
 
 /* ============================================================================
-   QUICK ACTIONS TOOLBAR - Removed per user request
+   QUICK ACTIONS TOOLBAR - Action buttons below header
    ============================================================================ */
+
+#ubs-quick-actions {
+  position: fixed;
+  top: 58px;
+  left: 0;
+  right: 0;
+  height: 44px;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 16px;
+
+  background: #F8F8F8;
+  border-bottom: 1px solid #E0E0E0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#ubs-quick-actions .quick-actions-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#ubs-quick-actions .quick-actions-right {
+  display: flex;
+  align-items: center;
+}
+
+.ubs-quick-action-btn {
+  background: #FFFFFF !important;
+  border: 1px solid #D0D0D0 !important;
+  border-radius: 4px !important;
+  color: #333333 !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+}
+
+.ubs-quick-action-btn:hover {
+  background: #E60000 !important;
+  border-color: #E60000 !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 6px rgba(230, 0, 0, 0.25) !important;
+}
+
+.ubs-full-scan-btn {
+  background: linear-gradient(135deg, #E60000 0%, #C00000 100%) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  color: #FFFFFF !important;
+  padding: 6px 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 6px rgba(230, 0, 0, 0.3) !important;
+}
+
+.ubs-full-scan-btn:hover {
+  background: linear-gradient(135deg, #C00000 0%, #E60000 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(230, 0, 0, 0.4) !important;
+}
 
 /* ============================================================================
-   LAYOUT FIX - Prevent body scroll, make input visible without scrolling
+   LAYOUT FIX - Full-height flex column layout
    ============================================================================ */
 
-#root {
-  height: calc(100vh - 72px);
-  margin-top: 52px;
-  margin-bottom: 20px;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
+}
+
+body {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: 100vh;
+  margin: 0;
+  padding-top: 92px;
+  overflow: hidden;
 }
 
 .cl-root,
 .cl-main,
 main {
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 
 .cl-chat,
 div[class*="chat"],
 div[class*="Chat"] {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -544,9 +665,11 @@ div[class*="Chat"] {
 div[class*="message-list"],
 div[class*="MessageList"],
 div[class*="messages"] {
-  flex: 1 1 auto;
+  flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: 120px;
+  scroll-behavior: smooth;
 }
 
 .cl-input-root,
@@ -554,22 +677,36 @@ div[class*="messages"] {
 div[class*="input-root"],
 div[class*="InputRoot"],
 div[class*="input-container"],
-div[class*="InputContainer"],
+div[class*="InputContainer"] {
+  position: fixed !important;
+  bottom: 200px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 48px) !important;
+  max-width: 800px !important;
+  z-index: 1000 !important;
+  flex-shrink: 0 !important;
+  padding: 4px 10px !important;
+  margin: 0 !important;
+  background: #F5F5F5 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
 form {
-  flex-shrink: 0;
-  padding-bottom: 20px !important;
-  margin-bottom: 0 !important;
+  margin: 0 !important;
 }
 
 /* Force textarea to single line height */
 textarea,
 .cl-input textarea,
 textarea[placeholder] {
-  min-height: 40px !important;
-  max-height: 40px !important;
-  height: 40px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  height: 28px !important;
   resize: none !important;
   overflow-y: auto !important;
-  line-height: 1.4 !important;
-  padding: 10px 12px !important;
+  line-height: 1.3 !important;
+  padding: 4px 8px !important;
+  font-size: 14px !important;
 }

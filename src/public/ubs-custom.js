@@ -18,15 +18,15 @@
         headerBar.id = 'ubs-header-bar';
         headerBar.style.cssText = `
             position: fixed !important;
-            top: 0 !important;
+            top: 2px !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            height: 52px !important;
+            height: 56px !important;
             z-index: 999999 !important;
             display: flex !important;
             align-items: center !important;
-            padding: 0 22px !important;
+            padding: 4px 16px 0 16px !important;
             background: #FFFFFF !important;
             border-bottom: 1px solid #E0E0E0 !important;
             box-sizing: border-box !important;
@@ -90,15 +90,15 @@
             // Add inline styles to ensure they apply
             headerBar.style.cssText = `
                 position: fixed !important;
-                top: 0 !important;
+                top: 2px !important;
                 left: 0 !important;
                 right: 0 !important;
                 width: 100% !important;
-                height: 52px !important;
+                height: 56px !important;
                 z-index: 999999 !important;
                 display: flex !important;
                 align-items: center !important;
-                padding: 0 22px !important;
+                padding: 4px 16px 0 16px !important;
                 background: #FFFFFF !important;
                 border-bottom: 1px solid #E0E0E0 !important;
                 box-sizing: border-box !important;
@@ -408,6 +408,30 @@
             });
         }
 
+        // Move the input area to the top of the viewport
+        function moveInputToTop() {
+            const inputRoot = document.querySelector('.cl-input-root, .cl-input-container');
+            const messageList = document.querySelector('.cl-message-list, div[class*="message-list"]');
+            const header = document.getElementById('ubs-header-bar') || document.querySelector('.cl-header');
+
+            // Only move once and if both elements exist
+            if (!inputRoot || !messageList || document.getElementById('ubs-top-input-wrapper')) {
+                return;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.id = 'ubs-top-input-wrapper';
+
+            wrapper.appendChild(inputRoot);
+
+            // Insert just below the header if it exists, else above the messages
+            if (header && header.parentNode) {
+                header.parentNode.insertBefore(wrapper, header.nextSibling);
+            } else if (messageList.parentNode) {
+                messageList.parentNode.insertBefore(wrapper, messageList);
+            }
+        }
+
         // Initialize everything
         function initializeUBSTheme() {
             createHeaderBar();  // NEW: Create the simple white header bar
@@ -416,6 +440,7 @@
             addProfessionalAnimations();
             addNewChatConfirmation();
             enforceMessageStyling();
+            moveInputToTop();
         }
         
         // Run immediately
@@ -478,5 +503,258 @@
     }
 })();
 
-// Quick Actions Toolbar - Removed per user request
-// (Previously contained: Analyze a transaction, Explain a red-flag, Risk summary, Full dataset AML scan)
+// Quick Actions Toolbar
+(function() {
+    'use strict';
+
+    function createQuickActionsToolbar() {
+        // Check if toolbar already exists to prevent duplicates
+        if (document.getElementById('ubs-quick-actions')) {
+            console.log('Quick actions toolbar already exists, skipping creation');
+            return;
+        }
+
+        // Find the existing header
+        const topHeader = document.getElementById('ubs-top-header') || document.getElementById('ubs-header-bar');
+        if (!topHeader) {
+            console.log('Top header not found, cannot insert quick actions toolbar');
+            return;
+        }
+
+        // Create toolbar container
+        const toolbar = document.createElement('div');
+        toolbar.id = 'ubs-quick-actions';
+
+        // Create left container for first 3 buttons
+        const leftContainer = document.createElement('div');
+        leftContainer.className = 'quick-actions-left';
+
+        // Define quick action buttons
+        const actions = [
+            {
+                label: 'Analyze a transaction',
+                prompt: 'Please analyze this transaction for potential AML risks. Explain which red flags might apply and why.'
+            },
+            {
+                label: 'Explain a red-flag',
+                prompt: 'Explain in simple terms why this transaction might trigger an AML red flag and which regulatory concerns it relates to.'
+            },
+            {
+                label: 'Risk summary',
+                prompt: 'Give me a high-level AML risk summary for this client based on the following information.'
+            }
+        ];
+
+        // Create buttons and add to left container
+        actions.forEach(action => {
+            const button = document.createElement('button');
+            button.textContent = action.label;
+            button.className = 'ubs-quick-action-btn';
+
+            button.addEventListener('click', function() {
+                // Find the chat input textarea
+                const textarea = document.querySelector('textarea[placeholder*="Type"], textarea');
+                if (!textarea) {
+                    console.error('Chat textarea not found');
+                    return;
+                }
+
+                // Set the value
+                textarea.value = action.prompt;
+
+                // Trigger input event so Chainlit detects the change
+                const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(inputEvent);
+
+                // Also trigger change event for good measure
+                const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(changeEvent);
+
+                // Find and click the send button
+                let sendBtn = document.querySelector('button[aria-label="Send"]');
+                if (!sendBtn) {
+                    sendBtn = document.querySelector('button[type="submit"]');
+                }
+                if (!sendBtn) {
+                    // Fallback: look for button near the textarea
+                    const form = textarea.closest('form');
+                    if (form) {
+                        sendBtn = form.querySelector('button');
+                    }
+                }
+
+                if (sendBtn) {
+                    // Small delay to ensure the input value is registered
+                    setTimeout(() => {
+                        sendBtn.click();
+                        console.log('Quick action sent:', action.label);
+                    }, 50);
+                } else {
+                    console.error('Send button not found');
+                }
+            });
+
+            leftContainer.appendChild(button);
+        });
+
+        // Add left container to toolbar
+        toolbar.appendChild(leftContainer);
+
+        // Create right container for Full Dataset AML Scan button
+        const rightContainer = document.createElement('div');
+        rightContainer.className = 'quick-actions-right';
+
+        // Add Full Dataset AML Scan button (fourth button, more prominent, on the right)
+        if (!document.getElementById('ubs-full-dataset-btn')) {
+            const fullScanBtn = document.createElement('button');
+            fullScanBtn.id = 'ubs-full-dataset-btn';
+            fullScanBtn.className = 'ubs-full-scan-btn';
+            fullScanBtn.textContent = 'Full dataset AML scan';
+
+            fullScanBtn.addEventListener('click', function() {
+                // Find the chat input textarea
+                const textarea = document.querySelector('textarea[placeholder*="Type"], textarea');
+                if (!textarea) {
+                    console.error('Chat textarea not found');
+                    return;
+                }
+
+                // Set the full scan prompt
+                textarea.value = 'Run a full AML risk scan on the entire client dataset. Identify the highest-risk clients, the main patterns of suspicious behavior, and summarize key red flags by segment (jurisdiction, product type, channel, and transaction pattern).';
+
+                // Trigger input event so Chainlit detects the change
+                const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(inputEvent);
+
+                // Also trigger change event for good measure
+                const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+                textarea.dispatchEvent(changeEvent);
+
+                // Find and click the send button
+                let sendBtn = document.querySelector('button[aria-label="Send"]');
+                if (!sendBtn) {
+                    sendBtn = document.querySelector('button[type="submit"]');
+                }
+                if (!sendBtn) {
+                    // Fallback: look for button near the textarea
+                    const form = textarea.closest('form');
+                    if (form) {
+                        sendBtn = form.querySelector('button');
+                    }
+                }
+
+                if (sendBtn) {
+                    // Small delay to ensure the input value is registered
+                    setTimeout(() => {
+                        sendBtn.click();
+                        console.log('Full dataset AML scan initiated');
+                    }, 50);
+                } else {
+                    console.error('Send button not found');
+                }
+            });
+
+            rightContainer.appendChild(fullScanBtn);
+        }
+
+        // Add right container to toolbar
+        toolbar.appendChild(rightContainer);
+
+        // Insert toolbar right after the top header
+        topHeader.parentNode.insertBefore(toolbar, topHeader.nextSibling);
+        console.log('✅ Quick actions toolbar created!');
+    }
+
+    // Wait for page to load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createQuickActionsToolbar);
+    } else {
+        createQuickActionsToolbar();
+    }
+
+    // Also try on window load
+    window.addEventListener('load', function() {
+        setTimeout(createQuickActionsToolbar, 100);
+    });
+})();
+
+// Welcome Message for Empty State
+(function() {
+    'use strict';
+
+    function showWelcomeMessage() {
+        const messageList = document.querySelector('.cl-message-list, div[class*="message-list"], div[class*="MessageList"], div[class*="messages"]');
+        if (!messageList) return;
+
+        const observer = new MutationObserver(() => {
+            const messages = messageList.querySelectorAll('.cl-message, div[class*="message"], div[class*="Message"]');
+            const welcomeDiv = document.getElementById('ubs-welcome-message');
+
+            if (messages.length === 0) {
+                if (!welcomeDiv) {
+                    const welcome = document.createElement('div');
+                    welcome.id = 'ubs-welcome-message';
+                    welcome.style.cssText = `
+                        position: absolute !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        right: 0 !important;
+                        bottom: 0 !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                        font-size: 28px !important;
+                        font-weight: 500 !important;
+                        color: #666666 !important;
+                        pointer-events: none !important;
+                        z-index: 1 !important;
+                    `;
+                    welcome.textContent = 'Hello Compliance Officer';
+                    messageList.style.position = 'relative';
+                    messageList.appendChild(welcome);
+                }
+            } else {
+                if (welcomeDiv) {
+                    welcomeDiv.remove();
+                }
+            }
+        });
+
+        observer.observe(messageList, { childList: true, subtree: true });
+
+        // Initial check
+        const messages = messageList.querySelectorAll('.cl-message, div[class*="message"], div[class*="Message"]');
+        if (messages.length === 0) {
+            const welcome = document.createElement('div');
+            welcome.id = 'ubs-welcome-message';
+            welcome.style.cssText = `
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                font-size: 28px !important;
+                font-weight: 500 !important;
+                color: #666666 !important;
+                pointer-events: none !important;
+                z-index: 1 !important;
+            `;
+            welcome.textContent = 'Hello Compliance Officer';
+            messageList.style.position = 'relative';
+            messageList.appendChild(welcome);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(showWelcomeMessage, 200));
+    } else {
+        setTimeout(showWelcomeMessage, 200);
+    }
+
+    window.addEventListener('load', function() {
+        setTimeout(showWelcomeMessage, 300);
+    });
+})();

@@ -8,9 +8,10 @@ import argparse
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Iterator
 
 from utils.router import RouteQuery, create_route_chain
+from utils.session_manager import ConversationSession, get_session_manager
 
 try:
     from company_agent import CompanyQAAgent
@@ -58,7 +59,11 @@ class AgentRouter:
             )
         return completed.stdout.strip() or f"[Router] {script_name} returned no output."
 
-    def _run_company_agent(self, question: str) -> str:
+    def _run_company_agent(
+        self,
+        question: str,
+        session: Optional[ConversationSession] = None
+    ) -> str:
         """
         Use the in-process CompanyQAAgent when available.
         """
@@ -68,11 +73,36 @@ class AgentRouter:
         if self._company_agent is None:
             self._company_agent = CompanyQAAgent(model=self.company_model)
 
-        return self._company_agent.answer(question)
+        return self._company_agent.answer(question, session=session)
 
-    def route_and_execute(self, question: str) -> str:
+    def _run_company_agent_stream(
+        self,
+        question: str,
+        session: Optional[ConversationSession] = None
+    ) -> Iterator[str]:
+        """
+        Stream response from CompanyQAAgent.
+        """
+        if CompanyQAAgent is None:
+            yield "[Router] company_agent.py is unavailable in this environment."
+            return
+
+        if self._company_agent is None:
+            self._company_agent = CompanyQAAgent(model=self.company_model)
+
+        yield from self._company_agent.answer_stream(question, session=session)
+
+    def route_and_execute(
+        self,
+        question: str,
+        session: Optional[ConversationSession] = None
+    ) -> str:
         """
         Route a question, then dispatch to the matched agent.
+
+        Args:
+            question: User's question
+            session: Optional conversation session for context
         """
         try:
             route_result: RouteQuery = self.route_chain.invoke({"question": question})
@@ -86,10 +116,16 @@ class AgentRouter:
         destination = route_result.destination
         task = route_result.task
 
+        # Store routing decision in session
+        if session:
+            session.add_message("user", question)
+            session.set_context("last_destination", destination)
+            session.set_context("last_task", task)
+
         if destination == "suspicious_activity":
             body = self._run_script("suspicious_agent.py", question)
         elif destination == "company_info":
-            body = self._run_company_agent(question)
+            body = self._run_company_agent(question, session)
         elif destination == "account_info":
             body = self._run_script("account_agent.py", question)
         else:
@@ -98,7 +134,84 @@ class AgentRouter:
                 "(suspicious activity, company information, account activity)."
             )
 
+        # Store response in session
+        if session:
+            session.add_message(
+                "assistant",
+                body,
+                destination=destination,
+                task=task
+            )
+
         return f"[{destination}:{task}] {body}"
+
+    def route_and_execute_stream(
+        self,
+        question: str,
+        session: Optional[ConversationSession] = None
+    ) -> Iterator[str]:
+        """
+        Route a question and stream the response from the matched agent.
+
+        Args:
+            question: User's question
+            session: Optional conversation session for context
+
+        Yields:
+            Response chunks as they arrive
+        """
+        try:
+            route_result: RouteQuery = self.route_chain.invoke({"question": question})
+            print(f"DEBUG: route_result = {route_result}")
+        except Exception as exc:
+            yield f"[routing_error] Failed to classify request: {exc}"
+            return
+
+        if route_result is None:
+            yield "[routing_error] The routing model returned None. Please try again."
+            return
+
+        destination = route_result.destination
+        task = route_result.task
+
+        # Store routing decision
+        if session:
+            session.add_message("user", question)
+            session.set_context("last_destination", destination)
+            session.set_context("last_task", task)
+
+        # Yield the routing header
+        yield f"[{destination}:{task}] "
+
+        # Stream from the appropriate agent
+        full_response = ""
+        if destination == "company_info":
+            # Company agent supports streaming
+            for chunk in self._run_company_agent_stream(question, session):
+                full_response += chunk
+                yield chunk
+        else:
+            # Fallback to non-streaming for other agents
+            if destination == "suspicious_activity":
+                body = self._run_script("suspicious_agent.py", question)
+            elif destination == "account_info":
+                body = self._run_script("account_agent.py", question)
+            else:
+                body = (
+                    "The request does not match the supported tasks "
+                    "(suspicious activity, company information, account activity)."
+                )
+            full_response = body
+            yield body
+
+        # Store complete response in session
+        if session:
+            session.add_message(
+                "assistant",
+                full_response,
+                destination=destination,
+                task=task
+            )
 
 
 def main() -> None:

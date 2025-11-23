@@ -45,41 +45,6 @@ Our system analyzes **11 distinct risk indicators**:
 - Top suspects identification and ranking
 - Comprehensive dataset-wide pattern detection
 
-## Project Structure
-
-```
-LauzHACK/
-├── agent_router.py              # Main routing agent
-├── suspicious_agent.py          # Suspicious activity detection
-├── company_agent.py             # Company information queries
-├── account_agent.py             # Account activity analysis
-├── aml_utils.py                 # Shared utility functions
-│
-├── features/                    # AML detection modules
-│   ├── run_all_features.py      # Orchestrates all feature analysis
-│   ├── ai_report_generator.py  # Natural language report generation
-│   ├── analyze_top_suspects.py # Top suspect identification
-│   ├── mass_analysis.py         # Batch processing
-│   │
-│   ├── feature_frequency.py              # Transaction frequency analysis
-│   ├── feature_burst_structuring.py      # Burst & structuring detection
-│   ├── feature_atypical_amounts.py       # Outlier amount detection
-│   ├── feature_cross_border.py           # Cross-border risk analysis
-│   ├── feature_counterparties.py         # Counterparty risk assessment
-│   ├── feature_irregularity.py           # Transaction irregularity detection
-│   ├── feature_night_activity.py         # After-hours activity monitoring
-│   ├── feature_ephemeral_account.py      # Ephemeral account detection
-│   ├── feature_account_age.py            # Account age analysis
-│   ├── feature_abnormal_activity.py      # Abnormal behavior detection
-│   └── feature_account_multiplicity.py   # Shell network identification
-│
-├── client_anomaly_detection.py  # Client anomaly detection
-├── client_anomaly_detection.ipynb # Jupyter notebook for exploration
-│
-└── utils/                       # Routing utilities
-    └── router.py
-```
-
 ## How It Works
 
 ### 1. Data Ingestion
@@ -108,8 +73,6 @@ The AI report generator converts technical JSON output into natural language rep
 - Detail specific findings for each risk indicator
 - Recommend actions based on overall risk level
 - Include audit trails for compliance documentation
-- 
-```
 
 ## Technical Stack
 
