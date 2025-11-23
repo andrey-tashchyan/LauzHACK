@@ -151,4 +151,3 @@ Thumbs.db
 # Chainlit
 .files/
 chainlit.md
-.chainlit/
