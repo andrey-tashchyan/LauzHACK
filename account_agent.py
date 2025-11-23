@@ -93,6 +93,36 @@ FALLBACK_SUSPICIOUS_INDUSTRIES = [
     "Cult., educ., scient.& research org.",
 ]
 
+# Mapping between canonical feature keys and human-friendly titles
+FEATURE_TITLES = {
+    "frequency": "Transaction Frequency Analysis",
+    "burst_structuring": "Burst Detection and Structuring Analysis",
+    "atypical_amounts": "Atypical Transaction Amounts Detection",
+    "cross_border": "Cross-Border Transaction Analysis",
+    "counterparties": "Counterparty Analysis",
+    "irregularity": "Irregularity Score Analysis",
+    "night_activity": "Night-Time Activity Analysis",
+    "ephemeral_account": "Ephemeral Account Detection",
+    "abnormal_activity": "Abnormal Activity Detection",
+    "account_age": "Account Age Analysis",
+    "account_multiplicity": "Account Multiplicity Analysis",
+}
+
+# Lightweight alias list to recognise feature requests in user questions
+FEATURE_ALIASES = {
+    "frequency": ["frequency", "transaction frequency", "freq"],
+    "burst_structuring": ["burst", "structuring", "burst structuring", "burst detection"],
+    "atypical_amounts": ["atypical", "atypical amounts", "unusual amounts", "odd amounts"],
+    "cross_border": ["cross border", "cross-border", "international"],
+    "counterparties": ["counterparty", "counterparties", "counter party"],
+    "irregularity": ["irregularity", "irregular"],
+    "night_activity": ["night", "night activity", "overnight", "after hours"],
+    "ephemeral_account": ["ephemeral", "ephemeral account"],
+    "abnormal_activity": ["abnormal", "abnormal activity"],
+    "account_age": ["account age", "age of account"],
+    "account_multiplicity": ["multiplicity", "multiple accounts", "account multiplicity"],
+}
+
 
 def _normalize(text: str) -> str:
     if not isinstance(text, str):
@@ -507,6 +537,18 @@ class AccountAgent:
                 best_len = len(name_tokens)
         return best_id
 
+    def _extract_account_id(self, question: str) -> Optional[str]:
+        """
+        Detect whether the question contains a known account_id.
+        Useful when the user provides an account ID directly instead of a name.
+        """
+        tokens = re.findall(r"[A-Za-z0-9_-]+", question)
+        for token in tokens:
+            token_str = str(token)
+            if token_str in self.account_to_partner:
+                return token_str
+        return None
+
     def resolve_partner(self, question: str) -> PartnerResolution:
         uuid_candidates = re.findall(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", question)
         for candidate in uuid_candidates:
@@ -515,6 +557,14 @@ class AccountAgent:
             if candidate in self.account_to_partner:
                 pid = self.account_to_partner[candidate]
                 return PartnerResolution(pid, [candidate], None, "account_id matched to partner")
+
+        account_token = self._extract_account_id(question)
+        if account_token:
+            if account_token in self.account_to_partner:
+                pid = self.account_to_partner[account_token]
+                return PartnerResolution(pid, [account_token], None, "account_id token")
+            if account_token in set(self.partner_df["partner_id"]):
+                return PartnerResolution(account_token, self.partner_to_accounts.get(account_token, []), None, "partner_id token")
 
         direct_name = self._name_in_question(question)
         if direct_name:
@@ -577,6 +627,41 @@ class AccountAgent:
 
     def _is_suspicious_industry(self, industry: str) -> bool:
         return industry in self.suspicious_industries
+
+    def _extract_requested_features(self, question: str) -> List[str]:
+        """
+        Pull explicit feature mentions from the user question.
+        Returns canonical feature keys used in run_all_features.
+        """
+        lowered = question.lower()
+        found: List[str] = []
+        for canonical, aliases in FEATURE_ALIASES.items():
+            if any(alias in lowered for alias in aliases):
+                if canonical not in found:
+                    found.append(canonical)
+        return found
+
+    def _feature_display_name(self, feature_key: str) -> str:
+        return FEATURE_TITLES.get(feature_key, feature_key)
+
+    def _format_feature_result(self, feature: Dict) -> str:
+        """Render a concise string for a single feature result."""
+        name = self._feature_display_name(feature.get("feature_name", "unknown"))
+        risk_level = feature.get("risk_level")
+        risk_score = feature.get("risk_score")
+        reasons = feature.get("risk_reasons") or []
+        metrics = feature.get("metrics") or {}
+        simple_metrics = []
+        for key, val in metrics.items():
+            if isinstance(val, (int, float, str)):
+                simple_metrics.append(f"{key}={val}")
+        metrics_str = "; ".join(simple_metrics[:6])
+        lines = [f"{name} (risk={risk_level}, score={risk_score})"]
+        if reasons:
+            lines.append("  Reasons: " + "; ".join(str(r) for r in reasons if r))
+        if metrics_str:
+            lines.append("  Key metrics: " + metrics_str)
+        return "\n".join(lines)
 
     def _compress_features(self, analysis: Dict) -> Dict:
         if not analysis:
@@ -709,6 +794,23 @@ class AccountAgent:
             reason = watchlist_info.get("watch_reason") or "Flagged in top suspects list."
             watchlist_warning = f"⚠️ Partner is on suspects list{suffix}: {reason}"
 
+        requested_features = self._extract_requested_features(question)
+        if requested_features:
+            features_by_name = {feat.get("feature_name"): feat for feat in (features_analysis or {}).get("features", [])}
+            lines = []
+            if watchlist_warning:
+                lines.append(watchlist_warning)
+            lines.append(f"Requested features for {partner_name or partner_id}:")
+            for key in requested_features:
+                feat = features_by_name.get(key)
+                if feat:
+                    lines.append(self._format_feature_result(feat))
+                else:
+                    lines.append(f"{self._feature_display_name(key)}: Not available for this account.")
+            if getattr(self, "using_mock_llm", False):
+                lines.append("[using mock Together client for offline test]")
+            return "\n".join(lines)
+
         user_content = (
             f"Question: {question}\n"
             f"Basic request: {basic_flag}\n"
@@ -807,6 +909,7 @@ class AccountAgent:
                 save_json=False,
             )
         compressed_features = self._compress_features(features_analysis)
+        features_by_name = {feat.get("feature_name"): feat for feat in (features_analysis or {}).get("features", [])}
 
         basic_flag = is_basic_question(question)
         watchlist_warning = ""
@@ -825,6 +928,19 @@ class AccountAgent:
             reason = watchlist_info.get("watch_reason") or "Flagged in top suspects list."
             watchlist_warning = f"⚠️ Partner is on suspects list{suffix}: {reason}"
             yield watchlist_warning + "\n"
+
+        requested_features = self._extract_requested_features(question)
+        if requested_features:
+            yield f"Requested features for {partner_name or partner_id}:\n"
+            for key in requested_features:
+                feat = features_by_name.get(key)
+                if feat:
+                    yield self._format_feature_result(feat) + "\n"
+                else:
+                    yield f"{self._feature_display_name(key)}: Not available for this account.\n"
+            if getattr(self, "using_mock_llm", False):
+                yield "[using mock Together client for offline test]\n"
+            return
 
         user_content = (
             f"Question: {question}\n"
