@@ -1,0 +1,902 @@
+[
+  {
+    "partner_id": "2f07ef4f-2dd8-4cd1-94d5-004be5de1ec8",
+    "partner_name": "Tania Gfeller",
+    "total_transactions": 31054,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "a12a5f17-3f3e-416e-b76f-57c90625fbc4",
+    "partner_name": "Liliane Hofstetter",
+    "total_transactions": 10549,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "da7ceb65-881c-433e-b5c5-ae95412ffa9b",
+    "partner_name": "Ross, Brown and Pace",
+    "total_transactions": 7222,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "90c31f7a-4ccf-4de5-adb2-11b32452f246",
+    "partner_name": "Maël Lüscher",
+    "total_transactions": 5987,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "98b6bf15-7072-482d-a743-2debe10a7b39",
+    "partner_name": "Zbinden Eichenberger & Cie.",
+    "total_transactions": 4663,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "f0d2946b-0c07-4980-9117-946171de82bd",
+    "partner_name": "Roos Schwab & Cie.",
+    "total_transactions": 2156,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "44e9a063-c285-462d-b85f-fb9475921935",
+    "partner_name": "Guy Schär",
+    "total_transactions": 2010,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "6079533f-67da-415a-ae7a-85607868d54a",
+    "partner_name": "快讯科技有限公司",
+    "total_transactions": 1881,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "a4806448-70b5-4354-8a63-61369e86a334",
+    "partner_name": "Meili Gfeller & Co.",
+    "total_transactions": 1827,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "d05d6b52-c614-4372-93a5-71e3e3d096a4",
+    "partner_name": "Leu AG",
+    "total_transactions": 1746,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "02677dbd-fbdd-4e09-9c06-d662742ebaff",
+    "partner_name": "Fitore Kaiser",
+    "total_transactions": 1711,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "9204558d-433c-4bdc-b911-2ddd6e577f66",
+    "partner_name": "Wehrli GmbH",
+    "total_transactions": 1668,
+    "average_risk_score": 85.0,
+    "overall_risk_level": "HIGH",
+    "high_risk_features": 1,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "76d47590-7580-4f77-bc64-a6c4d0f06fd3",
+    "partner_name": "Seiler & Co.",
+    "total_transactions": 1597,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "5f62c637-975b-476f-bb4f-e4f8a0bb3ca2",
+    "partner_name": "Probst GmbH",
+    "total_transactions": 1567,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "f32c1626-278d-4071-99d7-2b708ac32c27",
+    "partner_name": "Martin Schweizer AG",
+    "total_transactions": 1547,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "ccedb93a-3359-4da9-82b2-81de68992667",
+    "partner_name": "Michel Blum & Söhne",
+    "total_transactions": 1545,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "e79438c7-a612-44f8-aecc-4760be119849",
+    "partner_name": "Steinmann GmbH",
+    "total_transactions": 1472,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "aa7c9757-50fd-4c5b-a8c9-14bcf6c3e51a",
+    "partner_name": "Muhamed Schumacher",
+    "total_transactions": 1409,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "c3084318-e3dc-4df3-b654-6906972ce669",
+    "partner_name": "Gabrielle Boulanger",
+    "total_transactions": 1349,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "b0c41474-bb1c-4bf0-8674-70284e2d5bb2",
+    "partner_name": "Grob Gross AG",
+    "total_transactions": 1320,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "5b7b3eb6-46b5-4daa-9818-a04cfd6e5471",
+    "partner_name": "Lydia Blum",
+    "total_transactions": 1313,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "667e5c8f-0b82-4b02-b722-9abc3e078be7",
+    "partner_name": "Norman Portmann",
+    "total_transactions": 1305,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "d3a75464-531b-4d79-beb2-f57261cf963e",
+    "partner_name": "Florin Knecht",
+    "total_transactions": 1304,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "9dee08f3-2762-4b9b-b3a3-303d77e820da",
+    "partner_name": "Marietta Steiger",
+    "total_transactions": 1292,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "66e3064e-d6eb-433c-908e-1f8d17b8490e",
+    "partner_name": "Eichenberger Sidler & Cie.",
+    "total_transactions": 1282,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "0c8c6452-827b-4633-8dec-0b272f389eca",
+    "partner_name": "Megan Harper",
+    "total_transactions": 1276,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "7a5d65a7-3212-4ab5-a98b-7572ba81f8ee",
+    "partner_name": "Malgorzata Spörri",
+    "total_transactions": 1228,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "403ef6b1-461e-47d8-be64-09d6dd9f0ca9",
+    "partner_name": "Imhof Staub GmbH",
+    "total_transactions": 1177,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "35b9eebc-2e8d-4275-9a4b-942a8b08596c",
+    "partner_name": "Knecht & Co.",
+    "total_transactions": 1159,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "65021669-8772-4e91-a75e-1700c129759e",
+    "partner_name": "Annalisa Flückiger",
+    "total_transactions": 1156,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "d10b740f-f74c-4cd5-81b2-d32e2cf53294",
+    "partner_name": "Artur Eugster",
+    "total_transactions": 1123,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "986aecd3-1fad-456c-8b8a-cec92abeae55",
+    "partner_name": "Stefania Müller",
+    "total_transactions": 1064,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "08e191c0-59ea-43db-89a9-906f92059fe5",
+    "partner_name": "Hürlimann & Partner",
+    "total_transactions": 948,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "c953e7c7-2c60-4d92-b420-75c979e2f4b5",
+    "partner_name": "Schärer AG",
+    "total_transactions": 935,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "287247d5-c5bb-41ac-9d9c-ae955561f72b",
+    "partner_name": "Claude Lanz",
+    "total_transactions": 914,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "88da4b03-bfa6-4bdf-9296-19ecb057e543",
+    "partner_name": "Baumann Roth AG",
+    "total_transactions": 879,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "ea86727e-cd01-43f2-8d10-6f10476d07bc",
+    "partner_name": "Leonhard Kägi",
+    "total_transactions": 877,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "b4e5a933-7006-4a0c-94c0-e60effc888b6",
+    "partner_name": "Marjorie Hirt",
+    "total_transactions": 853,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "c160dea0-fd3c-4e37-a8ba-0c3a00c053ef",
+    "partner_name": "Ahmet Eichenberger",
+    "total_transactions": 775,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "26480bff-1173-4bde-ad37-fa5e542df244",
+    "partner_name": "Michele Zollinger",
+    "total_transactions": 735,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "5ab6e21f-f92b-43c4-8fb1-656b4d182a6f",
+    "partner_name": "Andres Fuchs",
+    "total_transactions": 728,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "f78deaa7-fb8f-41e9-8c99-6d5c0b3b9107",
+    "partner_name": "Ellen Jäggi",
+    "total_transactions": 727,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "ddf33b6d-559b-4383-95e6-e785fc016301",
+    "partner_name": "Ivo Kern",
+    "total_transactions": 711,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "3d818ac2-a514-42f1-8db0-94560afa5212",
+    "partner_name": "Jenny Leunberger",
+    "total_transactions": 682,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "3d687a0a-f4cf-4f2f-b6a9-81777334f621",
+    "partner_name": "Geiger Zollinger GmbH",
+    "total_transactions": 667,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "9950b732-a9cb-4c64-94fd-3413ffa3ac80",
+    "partner_name": "Alessandra Schneider",
+    "total_transactions": 615,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "44712e4d-bb13-4154-acbe-abd65dcde23f",
+    "partner_name": "Jil Koch",
+    "total_transactions": 608,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "8ceb5cc5-4a64-4fe7-9023-c7890077ee28",
+    "partner_name": "Lucette Wolf",
+    "total_transactions": 582,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "2832d675-e961-46ce-938b-70cefd7f4dfb",
+    "partner_name": "Helmut Zimmermann",
+    "total_transactions": 575,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "479090c1-da7f-44af-ae3e-b8bb67414e0b",
+    "partner_name": "Marine Chrétien",
+    "total_transactions": 572,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "e3158032-646f-4505-9719-ac1bcfcb90e5",
+    "partner_name": "Erika Geiger",
+    "total_transactions": 570,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "73bafeaf-64af-4a05-98a0-2b014a3ca943",
+    "partner_name": "Yvan Fehr",
+    "total_transactions": 569,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "f4823830-d7b1-477b-af43-450365a507d8",
+    "partner_name": "Claire Steinberg",
+    "total_transactions": 564,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "b5ad3de9-4f90-4822-95ae-cb9d50fdbaba",
+    "partner_name": "Lya Weibel",
+    "total_transactions": 549,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "44703625-0af2-40cc-9bbc-34ef5644368a",
+    "partner_name": "Leandra Iten",
+    "total_transactions": 547,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "560f8c6d-2388-4640-9d34-ec1380311f36",
+    "partner_name": "Gabriele Mettler",
+    "total_transactions": 544,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "f3bdac32-d8c7-48d5-ac4e-4ac24125ff51",
+    "partner_name": "Cristiana Amrein",
+    "total_transactions": 544,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "d3147cac-c91b-432c-95a4-a264c0af328b",
+    "partner_name": "Pietro Kern",
+    "total_transactions": 542,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "d67a0220-bdd3-4503-88d3-a695ddda6e1c",
+    "partner_name": "Wüthrich Steiger AG",
+    "total_transactions": 541,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "3b3f87ff-050e-4e53-b5f8-789902ca2b4f",
+    "partner_name": "Joséphine Kägi",
+    "total_transactions": 540,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "f92ef75b-ed0b-44a4-ac52-ab48bea85fc9",
+    "partner_name": "Walder & Co.",
+    "total_transactions": 533,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "9e5ef289-0551-4999-8476-29d10a33a4f3",
+    "partner_name": "Tobler AG",
+    "total_transactions": 527,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "851659a7-94de-4f94-b1d9-c6b9e5012a59",
+    "partner_name": "Hafner Lutz AG",
+    "total_transactions": 518,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "70008d1f-2a97-4aad-93ce-ab6715774fd2",
+    "partner_name": "Rinaldo Wegmann",
+    "total_transactions": 513,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "723abe74-88b5-49d4-aa38-affa2ed49634",
+    "partner_name": "Raymond Frick",
+    "total_transactions": 511,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "e30be130-f40e-4a9b-90b6-aef0936c25f1",
+    "partner_name": "Romy Haas",
+    "total_transactions": 487,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "66eefa94-5abc-4869-8dd6-b3f5afeb2e8c",
+    "partner_name": "James Wirz",
+    "total_transactions": 487,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "ba60b273-354e-454f-829d-70c1da0436aa",
+    "partner_name": "Kimberly Nichols",
+    "total_transactions": 485,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "62a9ea55-ead1-48dc-a319-cbcd44528a27",
+    "partner_name": "Sonia Schweizer",
+    "total_transactions": 481,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "8c0d4080-af12-4e32-bd7a-46621e1cd21e",
+    "partner_name": "Mirjam Mayer",
+    "total_transactions": 477,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "832d2eca-64d2-4ea1-95c8-9d343835294b",
+    "partner_name": "Vincent Davis",
+    "total_transactions": 459,
+    "average_risk_score": 55.0,
+    "overall_risk_level": "MEDIUM",
+    "high_risk_features": 0,
+    "medium_risk_features": 1
+  },
+  {
+    "partner_id": "56d945bc-5dc6-4a91-802e-79bf6d09c3c4",
+    "partner_name": "Vincenzo Benz",
+    "total_transactions": 473,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "546341f2-04f3-4436-bc65-8fdd2a8bdf12",
+    "partner_name": "Giger Wegmann GmbH",
+    "total_transactions": 470,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "0290cbd8-79ff-4b35-935a-7320a4460f0d",
+    "partner_name": "Fatma Hotz",
+    "total_transactions": 470,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "b1cd70a3-352b-44c6-b431-ff7b7833ed42",
+    "partner_name": "Michael Beck",
+    "total_transactions": 469,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "a2a5d283-fd10-4faf-8f57-b13e87fd04fa",
+    "partner_name": "Nelson Christen",
+    "total_transactions": 466,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "f9868670-0680-496a-b4cd-0fce3e1bfd2c",
+    "partner_name": "Senn Bucher & Partner",
+    "total_transactions": 459,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "557c7c6d-ecae-4368-8492-f0d5682720f3",
+    "partner_name": "Senn Rüegg GmbH",
+    "total_transactions": 455,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "a24c78ab-917e-45fc-9fc7-688d8548550f",
+    "partner_name": "Valentin Bachmann",
+    "total_transactions": 454,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "a749e3bc-37db-4cd4-bc40-4da41ac75bf5",
+    "partner_name": "Angela Friedli",
+    "total_transactions": 453,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "d19332db-bb0d-4045-8326-55903c94dde2",
+    "partner_name": "Asia Schnyder",
+    "total_transactions": 441,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "38d74a09-95ea-4f4d-a4fb-931a6c9a0472",
+    "partner_name": "Charlotte Baumgartner",
+    "total_transactions": 441,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "46ce3411-b55f-4125-8da5-d36bb8bcf3bc",
+    "partner_name": "Tobler AG",
+    "total_transactions": 440,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "44bf0ce3-70ed-4c75-9411-e1db4c00831f",
+    "partner_name": "Ritter Sigrist AG",
+    "total_transactions": 436,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "723a11ce-df1b-4705-ade5-3770f87015ed",
+    "partner_name": "Lina Scherrer",
+    "total_transactions": 434,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "0786b0d0-a2a2-431a-9753-d89b18eb0549",
+    "partner_name": "Leonora Hürlimann",
+    "total_transactions": 418,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "c39a13d0-a1f9-471b-8fc7-bf673e533824",
+    "partner_name": "Schwab GmbH",
+    "total_transactions": 417,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "bc5ea3f2-5aa7-405c-9208-8395755cbece",
+    "partner_name": "Blum Friedli GmbH",
+    "total_transactions": 412,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "11f99241-f29e-4d5b-a35e-f2ae292e4a0a",
+    "partner_name": "Ammann AG",
+    "total_transactions": 407,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "7042a190-5ba4-4b7d-b1c4-eb4712291fe2",
+    "partner_name": "Miranda Pfister",
+    "total_transactions": 401,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "76234c8a-a925-4218-92bf-272ca5d048ca",
+    "partner_name": "Georges Sigrist",
+    "total_transactions": 394,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "dbe15112-5315-4516-b3aa-e057ef088421",
+    "partner_name": "Amrein & Partner",
+    "total_transactions": 381,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "bcdf37e6-b4a3-4a3f-a64e-19cfd77a4d7c",
+    "partner_name": "Alexis Mckinney",
+    "total_transactions": 377,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "6a38b4b3-5be3-480f-ab22-f92655cb3661",
+    "partner_name": "Amela Wettstein",
+    "total_transactions": 376,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "ab1f9456-d183-417c-80d0-7ae1b3f90e5b",
+    "partner_name": "Miro Lustenberger",
+    "total_transactions": 368,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "affc5b59-6b03-48e9-9d34-5d79f433b457",
+    "partner_name": "John Sherman",
+    "total_transactions": 364,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "307818ec-bae9-4428-81de-56926f8fe446",
+    "partner_name": "Ekrem Gasser",
+    "total_transactions": 343,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "df1404fd-b286-4fa1-8e37-d1ee92421890",
+    "partner_name": "Tanya Vogt",
+    "total_transactions": 342,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "ce07a4a5-1419-4387-ad93-b6379854df17",
+    "partner_name": "James Pierce",
+    "total_transactions": 335,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  },
+  {
+    "partner_id": "d572c803-a5a3-493a-b811-df48a7a24b20",
+    "partner_name": "Arnaude Potier",
+    "total_transactions": 333,
+    "average_risk_score": 20.0,
+    "overall_risk_level": "LOW",
+    "high_risk_features": 0,
+    "medium_risk_features": 0
+  }
+]
