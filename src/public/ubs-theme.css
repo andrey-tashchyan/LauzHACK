@@ -506,93 +506,18 @@ body, p, span, div, .cl-text {
 }
 
 /* ============================================================================
-   QUICK ACTIONS TOOLBAR - Action Buttons Below Header
+   QUICK ACTIONS TOOLBAR - Removed per user request
    ============================================================================ */
-
-#ubs-quick-actions {
-  position: fixed;
-  top: 52px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 9999;
-
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  padding: 8px 20px;
-
-  background: #f7f7f7;
-  border-bottom: 1px solid #e0e0e0;
-  box-sizing: border-box;
-}
-
-/* Regular Quick Action Buttons */
-#ubs-quick-actions button,
-.ubs-quick-action-btn {
-  border-radius: 999px;
-  padding: 6px 14px;
-  border: 1px solid #d0d0d0;
-  background-color: white;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-#ubs-quick-actions button:hover,
-.ubs-quick-action-btn:hover {
-  border-color: #a0a0a0;
-  background-color: #f0f0f0;
-}
-
-#ubs-quick-actions button:active,
-.ubs-quick-action-btn:active {
-  transform: scale(0.98);
-}
-
-/* Full Dataset AML Scan Button - More Prominent */
-.ubs-full-scan-btn {
-  border-radius: 999px;
-  padding: 10px 24px;
-  border: 2px solid #E60000;
-  background-color: white;
-  color: #E60000;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  margin-left: 12px;
-  box-shadow: 0 2px 4px rgba(230, 0, 0, 0.1);
-}
-
-.ubs-full-scan-btn:hover {
-  background-color: #fff5f5;
-  border-color: #c00000;
-  box-shadow: 0 4px 8px rgba(230, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-.ubs-full-scan-btn:active {
-  transform: scale(0.98);
-}
 
 /* ============================================================================
-   LAYOUT FIX - Single scrollable area for entire interface
+   LAYOUT FIX - Prevent body scroll, make input visible without scrolling
    ============================================================================ */
 
-body {
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-}
-
 #root {
-  min-height: calc(100vh - 126px);
-  margin-top: 106px;
+  height: calc(100vh - 72px);
+  margin-top: 52px;
   margin-bottom: 20px;
-  overflow: visible !important;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -600,10 +525,10 @@ body {
 .cl-root,
 .cl-main,
 main {
-  min-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: visible !important;
+  overflow: hidden;
 }
 
 .cl-chat,
@@ -611,8 +536,8 @@ div[class*="chat"],
 div[class*="Chat"] {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
-  overflow: visible !important;
+  height: 100%;
+  overflow: hidden;
 }
 
 .cl-message-list,
@@ -620,8 +545,8 @@ div[class*="message-list"],
 div[class*="MessageList"],
 div[class*="messages"] {
   flex: 1 1 auto;
-  overflow: visible !important;
-  padding-bottom: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .cl-input-root,
